@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "557144867672",
+    "firebase_url": "https://keepfit-cb51c.firebaseio.com",
+    "project_id": "keepfit-cb51c",
+    "storage_bucket": "keepfit-cb51c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557144867672:android:bc252729c39c9a1bd61b2d",
+        "android_client_info": {
+          "package_name": "com.hoongyan.keepfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557144867672-l7an4gf09ug4h19bs0vdmrkmda7lkrcf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hoongyan.keepfit",
+            "certificate_hash": "d36c0387c1f9126f10e67c9fbe9086c464fc19dc"
+          }
+        },
+        {
+          "client_id": "557144867672-cb1u68lif8vnko5u31feducjt2rrp1m2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApvaq1bg4EqbqSrh_SOpCQDSlc6bc2dBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "557144867672-cb1u68lif8vnko5u31feducjt2rrp1m2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

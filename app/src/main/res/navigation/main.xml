@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/menuHome">
+
+    <fragment
+        android:id="@+id/menuHome"
+        android:name="com.hoongyan.keepfit.MainActivity.HomeFragment.HomeFragment"
+        android:label="KEEPFIT Home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/menuDebug"
+        android:name="com.hoongyan.keepfit.MainActivity.DebugFragment.DebugFragment"
+        android:label="Debug Info"
+        tools:layout="@layout/fragment_debug" />
+    <fragment
+        android:id="@+id/menuFood"
+        android:name="com.hoongyan.keepfit.MainActivity.FoodFragment.FoodFragment"
+        android:label="Food Intake"
+        tools:layout="@layout/fragment_food" />
+    <fragment
+        android:id="@+id/menuExercise"
+        android:name="com.hoongyan.keepfit.MainActivity.ExerciseFragment.ExerciseFragment"
+        android:label="Exercise"
+        tools:layout="@layout/fragment_exercise" />
+</navigation>

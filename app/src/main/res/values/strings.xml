@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">KEEPFIT</string>
+    <string name="notification_pedometer_channel_id">2352616</string>
+    <string name="notification_pedometer_channel_name">Steps Tracking Channel</string>
+    <string name="notification_pedometer_channel_description">Channel to show steps taken by userProfile</string>
+    <string name="notification_pedometer_title">Today Steps: </string>
+
+    <string name="notification_firebase_channel_id">4124512</string>
+    <string name="notification_firebase_channel_name">Firebase Synchronization Channel</string>
+    <string name="notification_firebase_channel_description">Update local database to Firebase</string>
+    <string name="notification_firebase_title">Updating Data to Online Database</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

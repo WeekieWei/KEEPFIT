@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity.DebugFragment.DebugFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Information"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:background="#AAAAAA"
+            android:padding="8dp"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="User ID"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_userID"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Step Sensor Type"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_sensorType"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Current Steps"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_currentSteps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Workers State"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:background="#AAAAAA"
+            android:padding="8dp"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Pedometer"
+            android:textSize="16sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:layout_columnWeight="2"/>
+
+        <TextView
+            android:id="@+id/debug_pedometerState"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text=": ##############"
+            android:textSize="16sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:layout_columnWeight="5"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Daily Refresh"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_dailyRefreshState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Firebase Sync"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_firebaseSyncState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Local Database"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:background="#AAAAAA"
+            android:padding="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Content:"
+            android:textSize="16sp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp" />
+
+        <TextView
+            android:id="@+id/debug_localDatabaseContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="##############\n##############\n##############"
+            android:textSize="16sp"
+            android:paddingHorizontal="8dp"
+            android:paddingStart="20dp"
+            android:paddingVertical="4dp" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Last Update"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_localDatabaseLastUpdate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/debug_updateLocalDatabaseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="12dp"
+            android:text="Manual Trigger"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily Reset"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:background="#AAAAAA"
+            android:padding="8dp"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Last Trigger"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_lastDailyResetTrigger"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Firebase Synchronization"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:background="#AAAAAA"
+            android:padding="8dp"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Last Trigger"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_lastFirebaseTrigger"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Last Update"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_lastFirebaseUpdate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Last Value"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="2"/>
+
+            <TextView
+                android:id="@+id/debug_lastFirebaseValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=": ##############"
+                android:textSize="16sp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:layout_columnWeight="5"/>
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/debug_updateFirebaseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="12dp"
+            android:text="Manual Trigger"/>
+
+    </LinearLayout>
+
+</ScrollView>
