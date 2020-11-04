@@ -24,5 +24,10 @@
         android:id="@+id/menuExercise"
         android:name="com.hoongyan.keepfit.MainActivity.ExerciseFragment.ExerciseFragment"
         android:label="Exercise"
-        tools:layout="@layout/fragment_exercise" />
+        tools:layout="@layout/fragment_food" />
+    <fragment
+        android:id="@+id/menuHistory"
+        android:name="com.hoongyan.keepfit.MainActivity.HistoryFragment.HistoryFragment"
+        android:label="History"
+        tools:layout="@layout/fragment_history" />
 </navigation>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,18 +24,21 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.hoongyan.keepfit.JavaClass.FoodHistoryObject;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.hoongyan.keepfit.JavaClass.HistoryObject;
 import com.hoongyan.keepfit.JavaClass.LocalDatabaseHelper;
 import com.hoongyan.keepfit.JavaClass.UserDailyData;
 import com.hoongyan.keepfit.JavaClass.UserProfile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -55,6 +59,10 @@ public class MVCModel {
 
     public interface TaskResultStatus {
         void onResultReturn(boolean result);
+    }
+
+    public interface HistoryObjectCallback {
+        void onDataFetched(ArrayList<HistoryObject> historyList);
     }
 
     public MVCModel(Activity activity) {
@@ -443,9 +451,12 @@ public class MVCModel {
 
     //FOOD
     public void updateFood(TaskResultStatus resultStatus, String name, double totalCalorie){
-        FoodHistoryObject obj = new FoodHistoryObject(name, totalCalorie, new Timestamp(new Date()));
 
-        db_userProfile.collection("foodHistory").document(getCurrentTimeStamp()).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
+        String documentID = "F: " + getCurrentTimeStamp() + UUID.randomUUID();
+
+        HistoryObject obj = new HistoryObject(documentID,1, name, totalCalorie, new Timestamp(new Date()));
+
+        db_userProfile.collection("History").document(documentID).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 resultStatus.onResultReturn(task.isSuccessful());
@@ -455,9 +466,12 @@ public class MVCModel {
 
     //EXERCISE
     public void updateExercise(TaskResultStatus resultStatus, String name, double totalCalorie){
-        FoodHistoryObject obj = new FoodHistoryObject(name, totalCalorie, new Timestamp(new Date()));
 
-        db_userProfile.collection("ExerciseHistory").document(getCurrentTimeStamp()).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
+        String documentID = "E: " + getCurrentTimeStamp() + UUID.randomUUID();
+
+        HistoryObject obj = new HistoryObject(documentID, 2, name, totalCalorie, new Timestamp(new Date()));
+
+        db_userProfile.collection("History").document(documentID).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 resultStatus.onResultReturn(task.isSuccessful());
@@ -465,7 +479,64 @@ public class MVCModel {
         });
     }
 
-    public static String getCurrentTimeStamp(){
+    //History
+    public void getHistoryList(HistoryObjectCallback callback){
+
+        ArrayList<HistoryObject> list = new ArrayList<>();
+
+        db_userProfile.collection("History").orderBy("timestamp", Query.Direction.DESCENDING).limit(30).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document: task.getResult()){
+                        list.add(document.toObject(HistoryObject.class));
+                    }
+                    callback.onDataFetched(list);
+                }
+            }
+        });
+    }
+
+    public void removeHistoryItem(TaskResultStatus status, String documentID){
+        if(!isOnline()){
+            status.onResultReturn(false);
+            return;
+        }
+
+        db_userProfile.collection("History").document(documentID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                status.onResultReturn(task.isSuccessful());
+            }
+        });
+    }
+
+    public void updateTitle(TaskResultStatus status, String documentID, String newTitle){
+        if(!isOnline()){
+            status.onResultReturn(false);
+            return;
+        }
+
+        db_userProfile.collection("History").document(documentID).update("historyTitle", newTitle).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                status.onResultReturn(task.isSuccessful());
+            }
+        });
+    }
+
+    private boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException | InterruptedException e) { e.printStackTrace(); }
+
+        return false;
+    }
+    private static String getCurrentTimeStamp(){
         try {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

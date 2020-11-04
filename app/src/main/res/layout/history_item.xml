@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    android:layout_margin="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp">
+
+        <TextView
+            android:id="@+id/historyTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/calValue"
+            android:text="History Title"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/historyDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/calValue"
+            android:text="History Description"
+            android:textSize="15sp"
+            android:maxLines="1"
+            android:textColor="@android:color/darker_gray"
+            android:layout_below="@+id/historyTitle"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/calValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/editButton"
+            android:layout_marginEnd="30dp"
+            android:text="xxx cal"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/deleteButton"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@android:drawable/ic_menu_edit"
+            />
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@android:drawable/ic_menu_delete"
+            />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
