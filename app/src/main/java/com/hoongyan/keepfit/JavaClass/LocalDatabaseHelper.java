@@ -16,6 +16,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME = "user_data_table";
     private static final String COL1 = "date";
     private static final String COL2 = "steps";
+    private static final String COL3 = "netCal";
 
     public LocalDatabaseHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -24,7 +25,8 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " TEXT PRIMARY KEY, " +
-                COL2 + " INT)";
+                COL2 + " INT," +
+                COL3 + " FLOAT)";
         db.execSQL(createTable);
     }
 
@@ -33,7 +35,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean updateDailyData(int steps, Date date){
+    public boolean updateDailyData(int steps, float netCal, Date date){
 
         if(date == null){
             date = new Date();
@@ -48,6 +50,7 @@ public class LocalDatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL1, formattedDate);
         contentValues.put(COL2, steps);
+        contentValues.put(COL3, netCal);
 
         Cursor cursor = getDateData(formattedDate);
 

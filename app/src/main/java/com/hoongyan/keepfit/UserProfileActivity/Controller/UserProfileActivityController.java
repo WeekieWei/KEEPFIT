@@ -12,6 +12,14 @@ import com.hoongyan.keepfit.R;
 import com.hoongyan.keepfit.JavaClass.UserProfile;
 import com.hoongyan.keepfit.UserProfileActivity.View.UserProfileActivityView;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class UserProfileActivityController implements UserProfileActivityControllerInterface {
 
     public interface DateChangeListener{
@@ -114,7 +122,6 @@ public class UserProfileActivityController implements UserProfileActivityControl
                 }else
                     container.setErrorEnabled(false);
             }
-
         }
 
         //Height
@@ -191,23 +198,95 @@ public class UserProfileActivityController implements UserProfileActivityControl
 
     }
 
+    public boolean validateWH(TextInputLayout weightContainer, TextInputLayout heightContainer){
+        String weight = weightContainer.getEditText().getText().toString();
+        String height = heightContainer.getEditText().getText().toString();
+        if(!weight.isEmpty() && !height.isEmpty()){
+            double weightVal = Double.parseDouble(weight);
+            double heightVal = Double.parseDouble(height);
+
+            if (heightVal < weightVal) {
+                weightContainer.setError("Weight > Height??");
+                heightContainer.setError("Height < Weight??");
+                return false;
+            }else {
+                weightContainer.setErrorEnabled(false);
+                heightContainer.setErrorEnabled(false);
+            }
+        }
+        return true;
+    }
+
     @Override
-    public void registerUserProfile(String firstName, String lastName, String dob, double weight,
+    public void registerUserProfile(int gender, String firstName, String lastName, String dob, double weight,
                                     double height, double fat, double waist, double neck, double hip, int activityLevel) {
+
+        double calRequired;
 
         //if fat is not input directly
         if(fat == Double.NEGATIVE_INFINITY) {
 
             if (hip == Double.NEGATIVE_INFINITY) {
                 //male
+                gender = 1;
                 fat = (495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height))) - 450;
             } else {
                 //female
+                gender = 2;
                 fat = (495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height))) - 450;
             }
         }
 
-        UserProfile userProfile = new UserProfile(firstName, lastName, dob, weight, height, fat, activityLevel);
+        //Age
+        LocalDate localDate = LocalDate.parse(dob, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        int age = Period.between(localDate, LocalDate.now()).getYears();
+
+
+        //Daily Calorie Required calculation
+        //Reference: https://www.calculator.net/calorie-calculator.html
+
+        if(gender == 1){
+            //Mifflin-St Jeor Equation
+            calRequired = 10 * weight + 6.25 * height - 5 * age + 5;
+        }else if(gender == 2){
+            calRequired = 10 * weight + 6.25 * height - 5 * age - 161;
+        }else{
+            //Katch-Mcardle Formula
+            //calRequired = 370 + 21.6 * (1 - fat) * weight;
+            calRequired = 0;
+        }
+
+        switch(activityLevel){
+            case 1 : calRequired *= 1.2;
+            break;
+            case 2 : calRequired *= 1.375;
+            break;
+            case 3 : calRequired *= 1.55;
+            break;
+            case 4 : calRequired *= 1.725;
+            break;
+            case 5 : calRequired *= 1.9;
+            break;
+        }
+
+        double bmi = weight / height / height * 10000;
+
+        int weightAdjust;
+        if(bmi < 18.5){ //Gain Weight Constant
+            weightAdjust = 500;
+        }else if(bmi > 25){ //Lose Weight Constant
+            weightAdjust = -500;
+        }else{ //Maintain Weight;
+            weightAdjust = 0;
+        }
+
+        String genderStr;
+        if(gender == 1)
+            genderStr = "Male";
+        else
+            genderStr = "Female";
+
+        UserProfile userProfile = new UserProfile(firstName, lastName, genderStr, dob, weight, height, fat, calRequired, bmi, weightAdjust, activityLevel);
         mvcModel.createUserProfile(new MVCModel.TaskResultStatus() {
             @Override
             public void onResultReturn(boolean result) {
@@ -215,10 +294,12 @@ public class UserProfileActivityController implements UserProfileActivityControl
                     mvcModel.isUserProfileCreated(new MVCModel.TaskResultStatus() {
                         @Override
                         public void onResultReturn(boolean result) {
-                            if(result)
+                            if(result){
                                 Toast.makeText(userProfileActivityView.getRootView().getContext(),
                                         "Profile Successfully Created", Toast.LENGTH_SHORT).show();
-                            userProfileActivityView.navigateToNewActivity(result);
+                                userProfileActivityView.generateAlertDialog(bmi, weightAdjust);
+                                mvcModel.saveUserProfileToLocalStorage(userProfile);
+                            }
                         }
                     });
                 }

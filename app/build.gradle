@@ -28,26 +28,29 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'com.google.firebase:firebase-analytics:17.5.0'
-    implementation 'com.google.firebase:firebase-auth:19.4.0'
+    implementation 'com.google.firebase:firebase-analytics:18.0.0'
+    implementation 'com.google.firebase:firebase-auth:20.0.0'
     implementation 'com.facebook.android:facebook-login:5.15.3'
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-firestore:21.6.0'
+    implementation 'com.google.firebase:firebase-firestore:22.0.0'
 
     implementation "androidx.work:work-runtime:2.4.0"
     implementation "androidx.work:work-gcm:2.4.0"
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 

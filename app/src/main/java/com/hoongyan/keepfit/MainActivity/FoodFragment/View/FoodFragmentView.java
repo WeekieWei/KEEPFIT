@@ -169,7 +169,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
         calorieGrid.setColumnCount(2);
 
         calorieTitle = new TextView(activity);
-        calorieTitle.setText("Calorie: ");
+        calorieTitle.setText("Calorie Gain: ");
         calorieTitle.setLayoutParams(getGridParam(0,3));
 
         calorieValue = new TextView(activity);

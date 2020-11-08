@@ -61,10 +61,10 @@ public class ExerciseFragmentController implements ExerciseFragmentFragmentContr
             JSONObject inputJson = new JSONObject();
             try {
                 inputJson.put("query", inputs[0]);
-                inputJson.put("gender", "male");
-                inputJson.put("weight_kg", 51.2);
-                inputJson.put("height_cm", 170);
-                inputJson.put("age", 23);
+                inputJson.put("gender", mvcModel.getUserGender());
+                inputJson.put("weight_kg", mvcModel.getUserWeight());
+                inputJson.put("height_cm", mvcModel.getUserHeight());
+                inputJson.put("age", mvcModel.getUserAge());
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;

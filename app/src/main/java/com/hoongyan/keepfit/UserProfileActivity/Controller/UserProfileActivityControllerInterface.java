@@ -11,7 +11,6 @@ public interface UserProfileActivityControllerInterface {
     public DatePickerDialog.OnDateSetListener setDateChangeListener(final UserProfileActivityController.DateChangeListener dateChangeListener);
     public boolean validateField(TextInputLayout container);
 
-    public void registerUserProfile(String firstName, String lastName, String dob, double weight,
-                                    double height, double fat, double waist, double neck, double hip,
-                                    int activityLevel);
+    public void registerUserProfile(int gender, String firstName, String lastName, String dob, double weight,
+                             double height, double fat, double waist, double neck, double hip, int activityLevel);
 }

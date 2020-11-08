@@ -20,6 +20,12 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.hoongyan.keepfit.JavaClass.UserHomePageData;
 import com.hoongyan.keepfit.MVCModel;
 import com.hoongyan.keepfit.MainActivity.HomeFragment.View.HomeFragmentView;
 import com.hoongyan.keepfit.MainActivity.MainActivityView;
@@ -32,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -55,8 +62,39 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
 
         mvcModel.setLoginStatus(true);
 
-        createNotificationChannel();
+        scheduleWorks();
 
+    }
+
+    public void getUpdatedHomePageData(){
+        if(mvcModel.isUserProfileExistInLocalStorage()){
+            homeFragmentView.bindDataToViews(mvcModel.getUserHomePageData());
+        }else{
+            mvcModel.loadUserProfileToLocalStorage(new MVCModel.TaskResultStatus() {
+                @Override
+                public void onResultReturn(boolean result) {
+                    if(result)
+                        homeFragmentView.bindDataToViews(mvcModel.getUserHomePageData());
+                }
+            });
+        }
+
+        mvcModel.getCard3ChartData(new MVCModel.NetCalFetcher() {
+            @Override
+            public void onDataFetched(ArrayList<BarEntry> barEntries, ArrayList<String> xAxisLabel) {
+
+
+                BarDataSet barDataSet = new BarDataSet(barEntries, "Net Cal");
+                barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+                BarData barData = new BarData(barDataSet);
+
+                homeFragmentView.bindDataToCard3Chart(barData, xAxisLabel);
+            }
+        });
+    }
+
+    private void scheduleWorks() {
         OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(StepTrackingWorker.class)
                 .build();
 
@@ -83,34 +121,6 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
         LocalDateTime timeNow = LocalDateTime.now();
 
         return Duration.between(timeNow, targetTime);
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            final String NOTIFICATION_PEDOMETER_CHANNEL_ID = context.getString(R.string.notification_pedometer_channel_id);
-            final String NOTIFICATION_PEDOMETER_CHANNEL_NAME = context.getString(R.string.notification_pedometer_channel_name);
-            final String NOTIFICATION_PEDOMETER_CHANNEL_DESCRIPTION = context.getString(R.string.notification_pedometer_channel_description);
-
-            NotificationChannel pedometerChannel = new NotificationChannel(NOTIFICATION_PEDOMETER_CHANNEL_ID, NOTIFICATION_PEDOMETER_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
-            pedometerChannel.setDescription(NOTIFICATION_PEDOMETER_CHANNEL_DESCRIPTION);
-
-
-            final String NOTIFICATION_FIREBASE_CHANNEL_ID = context.getString(R.string.notification_firebase_channel_id);
-            final String NOTIFICATION_FIREBASE_CHANNEL_NAME = context.getString(R.string.notification_firebase_channel_name);
-            final String NOTIFICATION_FIREBASE_CHANNEL_DESCRIPTION = context.getString(R.string.notification_firebase_channel_description);
-
-            NotificationChannel firebaseChannel = new NotificationChannel(NOTIFICATION_FIREBASE_CHANNEL_ID, NOTIFICATION_FIREBASE_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
-            firebaseChannel.setDescription(NOTIFICATION_FIREBASE_CHANNEL_DESCRIPTION);
-
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(pedometerChannel);
-                notificationManager.createNotificationChannel(firebaseChannel);
-            }
-        }
     }
 
     public static String getCurrentTimeStamp(){

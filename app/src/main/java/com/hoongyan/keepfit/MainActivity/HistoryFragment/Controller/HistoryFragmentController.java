@@ -27,7 +27,6 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
 
     //Data Field
     private Context context;
-    private ArrayList<String> documentIDList;
     private ArrayList<HistoryObject> historyList;
     private RecyclerView.Adapter adapter;
 

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -31,11 +33,21 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.hoongyan.keepfit.JavaClass.HistoryObject;
 import com.hoongyan.keepfit.JavaClass.LocalDatabaseHelper;
 import com.hoongyan.keepfit.JavaClass.UserDailyData;
+import com.hoongyan.keepfit.JavaClass.UserHomePageData;
 import com.hoongyan.keepfit.JavaClass.UserProfile;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -52,6 +64,8 @@ public class MVCModel {
     private SharedPreferences localStorage;
     private LocalDatabaseHelper localDatabase;
 
+    private ArrayList<BarDataSet> card3ChartDataSet;
+
 
     public interface AuthenticationCallBack {
         void onCallBack(String title, String message, int icon);
@@ -65,6 +79,10 @@ public class MVCModel {
         void onDataFetched(ArrayList<HistoryObject> historyList);
     }
 
+    public interface NetCalFetcher{
+        void onDataFetched(ArrayList<BarEntry> barEntries, ArrayList<String> xAxisLabel);
+    }
+
     public MVCModel(Activity activity) {
         this.activity = activity;
         auth = FirebaseAuth.getInstance();
@@ -73,6 +91,7 @@ public class MVCModel {
         if(user != null) setDatabaseReference();
         localStorage = activity.getSharedPreferences("KEEPFIT Storage", MODE_PRIVATE);
         localDatabase = new LocalDatabaseHelper(activity.getApplicationContext());
+        card3ChartDataSet = null;
     }
 
     public MVCModel(Context context, boolean firebaseAccess){
@@ -84,6 +103,7 @@ public class MVCModel {
         if(user != null) setDatabaseReference();
         localStorage = context.getSharedPreferences("KEEPFIT Storage", MODE_PRIVATE);
         localDatabase = new LocalDatabaseHelper(context);
+        card3ChartDataSet = null;
     }
 
     public void setDatabaseReference(){
@@ -220,6 +240,298 @@ public class MVCModel {
         });
     }
 
+    public void saveUserProfileToLocalStorage(UserProfile userProfile){
+        localStorage.edit().putFloat("calRequired", (float) userProfile.getCalRequired()).apply();
+        localStorage.edit().putFloat("weightAdjust", (float) userProfile.getWeightAdjust()).apply();
+        localStorage.edit().putFloat("bmi", (float) userProfile.getBmi()).apply();
+        localStorage.edit().putFloat("weight", (float) userProfile.getWeight()).apply();
+        localStorage.edit().putFloat("height", (float) userProfile.getHeight()).apply();
+        localStorage.edit().putString("gender", userProfile.getGender()).apply();
+        localStorage.edit().putString("dob", userProfile.getDob()).apply();
+    }
+
+    //HOME
+    public void updateLocalDatabase(int steps, Date date){
+
+        if(steps == Integer.MIN_VALUE) steps = (int) getCurrentSteps();
+
+        int currentStep = (int) localStorage.getFloat("currentSteps", 0f);
+
+
+        if(!localStorage.contains("totalCalIn") || !localStorage.contains("totalCalOut"))
+            loadTotalCalorieInOutToLocalStorage();
+        float totalCalIn = localStorage.getFloat("totalCalIn", 0f);
+        float totalCalOut = localStorage.getFloat("totalCalOut", 0f);
+        float totalRequired = localStorage.getFloat("calRequired", 0f);
+        float weightAdjust = localStorage.getFloat("weightAdjust", 0f);
+        float target = totalRequired + weightAdjust;
+        float netCal = -1 * (target - totalCalIn + totalCalOut + currentStep * 0.04f); //another copy down there
+
+        if(localDatabase.updateDailyData(steps, netCal, date)){
+            Log.i("UPDATE LOCAL DATABASE", "SUCCESS AT " + getCurrentTimeStamp());
+
+            localStorage.edit().putString("Debug_LocalDatabaseUpdate", getCurrentTimeStamp()).apply();
+
+            Cursor data = localDatabase.getData();
+
+            while(data.moveToNext()){
+
+                Log.i("DATA", data.getString(0) + "    " + data.getInt(1) + " " +
+                        data.getFloat(2));
+            }
+            localDatabase.close();
+        }else{
+            Log.i("UPDATE LOCAL DATABASE", "FAILED AT " + getCurrentTimeStamp());
+        }
+    }
+
+    public void updateFirebase(TaskResultStatus resultStatus){
+
+        Cursor cursor = localDatabase.getData();
+
+        if(cursor.getCount() < 1){
+            cursor.close();
+            localDatabase.close();
+            return;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String today = dateFormat.format(new Date());
+
+        UserDailyData userDailyData = new UserDailyData();
+
+        while(cursor.moveToNext()){
+
+            try {
+                int steps = cursor.getInt(1);
+                float netCal = cursor.getFloat(2);
+
+                userDailyData.setSteps(steps);
+                userDailyData.setNetCal(netCal);
+                String dateStr = cursor.getString(0);
+
+
+                Date date = dateFormat.parse(dateStr);
+                userDailyData.setTimestamp(new Timestamp(date));
+
+                //Log.i("TIMESTAMP", userDailyData.getTimestamp().toString() + userDailyData.getSteps());
+
+                Log.i("DATE", "\nToday: " + today + "\nData Date: " + date + "\n");
+
+                if(dateStr.equals(today)){
+
+                    if(steps == localStorage.getInt("lastFirebaseUpdateValue", -1)
+                    && netCal == localStorage.getFloat("lastFirebaseUpdateValue2", -1f)){
+                        Log.i("FirebaseUpdate", "Current value same with last update value");
+                        break;
+                    }
+
+                    db_userData.document("dailyData").set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            localStorage.edit().putInt("lastFirebaseUpdateValue", steps).apply();
+                            localStorage.edit().putFloat("lastFirebaseUpdateValue2", netCal).apply();
+                            resultStatus.onResultReturn(true);
+                        }
+                    });
+                }else{
+                    db_userProfile.collection("history").document(dateStr).set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            localDatabase.deleteDateData(dateStr);
+                            resultStatus.onResultReturn(true);
+                        }
+                    });
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+        localDatabase.close();
+    }
+
+    public void loadUserProfileToLocalStorage(TaskResultStatus status){
+        db_userProfile.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    saveUserProfileToLocalStorage(task.getResult().toObject(UserProfile.class));
+                    status.onResultReturn(true);
+                }
+            }
+        });
+    }
+
+    public boolean isUserProfileExistInLocalStorage(){
+        return localStorage.contains("calRequired")
+                && localStorage.contains("weightAdjust")
+                && localStorage.contains("bmi")
+                && localStorage.contains("weight")
+                && localStorage.contains("height")
+                && localStorage.contains("gender")
+                && localStorage.contains("dob");
+    }
+
+
+
+    public UserHomePageData getUserHomePageData(){
+        int currentStep = (int) localStorage.getFloat("currentSteps", 0f);
+
+
+        if(!localStorage.contains("totalCalIn") || !localStorage.contains("totalCalOut"))
+            loadTotalCalorieInOutToLocalStorage();
+        float totalCalIn = localStorage.getFloat("totalCalIn", 0f);
+        float totalCalOut = localStorage.getFloat("totalCalOut", 0f);
+        float totalRequired = localStorage.getFloat("calRequired", 0f);
+        float weightAdjust = localStorage.getFloat("weightAdjust", 0f);
+        float target = totalRequired + weightAdjust;
+        float netCal = -1 * (target - totalCalIn + totalCalOut + currentStep * 0.04f); //another copy up there
+
+        String card2_5Text = "Your daily target calorie is " + String.format("%.2f", target) + " cal. ";
+        if(LocalTime.now().getHour() >= 18) {
+            if (Math.abs(netCal) < 200) {
+                card2_5Text += "Your net calorie is around the expected value today, keep it up! ";
+
+                if (weightAdjust < 0) {
+                    card2_5Text += "Try to get as close to 0 net as possible or lesser if possible to lose weight. But don't stress out yourself";
+                } else if (weightAdjust > 0) {
+                    card2_5Text += "Try to get as close to 0 net as possible or more if possible to gain weight. But don't eat until you throw up";
+                }
+            } else if (netCal > 0) {
+                card2_5Text += "You have consumed " + netCal + " cal extra today. ";
+
+                if (weightAdjust < 0) {
+                    card2_5Text += "Try to eat lesser and exercise more";
+                } else if (weightAdjust > 0) {
+                    card2_5Text += "If you can take it, keep it on!";
+                } else {
+                    card2_5Text += "If this keep on happening, you will start to gain weight";
+                }
+
+            } else if (netCal < 0) {
+                card2_5Text += "You have consumed " + (-1 * netCal) + " cal less than target today. ";
+
+                if (weightAdjust < 0) {
+                    card2_5Text += "It is not recommended to have less than -200 net calorie, your body needs calorie to stay healthy too";
+                } else if (weightAdjust > 0) {
+                    card2_5Text += "You really need to eat more to gain weight";
+                } else {
+                    card2_5Text += "If this keep on happening, you will start to lose weight";
+                }
+            }
+        }
+
+
+
+        return new UserHomePageData(String.valueOf((int) totalCalIn), String.valueOf((int) totalCalOut),
+                String.valueOf(currentStep), String.valueOf((int) netCal), card2_5Text);
+    }
+
+    public void getCard3ChartData(NetCalFetcher fetcher){
+        if(card3ChartDataSet == null || localStorage.getBoolean("card3ChartNeedUpdate", true)){
+            card3ChartDataSet = new ArrayList<>();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String today = dateFormat.format(new Date());
+
+            LocalDate last7Days = LocalDate.now().minus(7, ChronoUnit.DAYS);
+
+            Date last7DaysDate = Date.from(last7Days.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            try {
+                Date dateToday = dateFormat.parse(today);
+
+                db_userProfile.collection("history").whereLessThan("timestamp", dateToday)
+                        .whereGreaterThanOrEqualTo("timestamp", last7DaysDate).limit(7).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    int i = 0;
+
+                                    ArrayList<BarEntry> valueSet = new ArrayList<>();
+                                    ArrayList<String> xAxisLabel = new ArrayList<>();
+
+                                    QuerySnapshot result = task.getResult();
+                                    int dummyData = 7 - result.size();
+
+                                    while(i < dummyData){
+                                        valueSet.add(new BarEntry(i, 0f));
+                                        xAxisLabel.add(" ");
+                                        i++;
+                                    }
+
+                                    for(QueryDocumentSnapshot document : result){
+                                        UserDailyData userDailyData = document.toObject(UserDailyData.class);
+                                        valueSet.add(new BarEntry(i, userDailyData.getNetCal()));
+
+                                        String date = new SimpleDateFormat("dd/MM")
+                                                .format(userDailyData.getTimestamp().toDate());
+
+                                        xAxisLabel.add(date);
+                                        i++;
+                                    }
+
+                                    fetcher.onDataFetched(valueSet, xAxisLabel);
+                                    Log.d("VALUE SET", valueSet.toString());
+                                    localStorage.edit().putBoolean("card3ChartNeedUpdate", false).apply();
+                                }
+                            }
+                        });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+
+        }
+    }
+
+    public void saveTotalCalorieInToLocalStorage(float totalCalorie){
+        localStorage.edit().putFloat("totalCalIn", totalCalorie).apply();
+    }
+
+    public void saveTotalCalorieOutToLocalStorage(float totalCalorie){
+        localStorage.edit().putFloat("totalCalOut", totalCalorie).apply();
+    }
+
+    public void loadTotalCalorieInOutToLocalStorage(){
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String today = dateFormat.format(new Date());
+
+        try {
+            Date date = dateFormat.parse(today);
+
+            db_userProfile.collection("History")
+                    .whereGreaterThanOrEqualTo("timestamp", date)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        double in = 0;
+                        double out = 0;
+
+                        for(QueryDocumentSnapshot document : task.getResult()){
+                            HistoryObject obj = document.toObject(HistoryObject.class);
+                            if(obj.getType() == 1){
+                                in += obj.getTotalCalorie();
+                            }else if(obj.getType() == 2){
+                                out += obj.getTotalCalorie();
+                            }
+                        }
+                        localStorage.edit().putFloat("totalCalIn", (float) in).apply();
+                        localStorage.edit().putFloat("totalCalOut", (float) out).apply();
+                    }
+                }
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     //STEP COUNTER METHODS
     public boolean isFirstTimeInstalled(){
         if(localStorage.getBoolean("firstTimeInstallation", true)){
@@ -291,89 +603,6 @@ public class MVCModel {
         return localStorage.edit().putFloat("currentSteps" , currentSteps).commit();
     }
 
-    //HOME
-    public void updateLocalDatabase(int steps, Date date){
-
-        if(steps == Integer.MIN_VALUE) steps = (int) getCurrentSteps();
-
-        if(localDatabase.updateDailyData(steps, date)){
-            Log.i("UPDATE LOCAL DATABASE", "SUCCESS AT " + getCurrentTimeStamp());
-
-            localStorage.edit().putString("Debug_LocalDatabaseUpdate", getCurrentTimeStamp()).apply();
-
-            Cursor data = localDatabase.getData();
-
-            while(data.moveToNext()){
-
-                Log.i("DATA", data.getString(0) + "    " + data.getInt(1));
-            }
-            localDatabase.close();
-        }else{
-            Log.i("UPDATE LOCAL DATABASE", "FAILED AT " + getCurrentTimeStamp());
-        }
-    }
-
-    public void updateFirebase(TaskResultStatus resultStatus){
-
-        Cursor cursor = localDatabase.getData();
-
-        if(cursor.getCount() < 1){
-            cursor.close();
-            localDatabase.close();
-            return;
-        }
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String today = dateFormat.format(new Date());
-
-        UserDailyData userDailyData = new UserDailyData();
-
-        while(cursor.moveToNext()){
-
-            try {
-                int steps = cursor.getInt(1);
-
-                userDailyData.setSteps(cursor.getInt(1));
-                String dateStr = cursor.getString(0);
-
-
-                Date date = dateFormat.parse(dateStr);
-                userDailyData.setTimestamp(new Timestamp(date));
-
-                //Log.i("TIMESTAMP", userDailyData.getTimestamp().toString() + userDailyData.getSteps());
-
-                Log.i("DATE", "\nToday: " + today + "\nData Date: " + date + "\n");
-
-                if(dateStr.equals(today)){
-
-                    if(steps == localStorage.getInt("lastFirebaseUpdateValue", -1)){
-                        Log.i("FirebaseUpdate", "Current value same with last update value");
-                        break;
-                    }
-
-                    db_userData.document("dailyData").set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            localStorage.edit().putInt("lastFirebaseUpdateValue", steps).apply();
-                            resultStatus.onResultReturn(true);
-                        }
-                    });
-                }else{
-                    db_userProfile.collection("history").document(dateStr).set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            localDatabase.deleteDateData(dateStr);
-                            resultStatus.onResultReturn(true);
-                        }
-                    });
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        cursor.close();
-        localDatabase.close();
-    }
 
     //DEBUG
     public String getUserID(){
@@ -402,7 +631,7 @@ public class MVCModel {
         int i = 1;
 
         while(cursor.moveToNext()){
-            result = result + cursor.getString(0) + "\t:\t" + cursor.getInt(1);
+            result = result + cursor.getString(0) + "\t:\t" + cursor.getInt(1) + "\t\t" + cursor.getFloat(2);
             if(i < count) result = result + "\n";
             i++;
         }
@@ -459,6 +688,11 @@ public class MVCModel {
         db_userProfile.collection("History").document(documentID).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    float oldTotal = localStorage.getFloat("totalCalIn", 0f);
+                    float newTotal = oldTotal + (float) totalCalorie;
+                    saveTotalCalorieInToLocalStorage(newTotal);
+                }
                 resultStatus.onResultReturn(task.isSuccessful());
             }
         });
@@ -474,9 +708,34 @@ public class MVCModel {
         db_userProfile.collection("History").document(documentID).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    float oldTotal = localStorage.getFloat("totalCalOut", 0f);
+                    float newTotal = oldTotal + (float) totalCalorie;
+                    saveTotalCalorieOutToLocalStorage(newTotal);
+                }
                 resultStatus.onResultReturn(task.isSuccessful());
             }
         });
+    }
+
+    public String getUserWeight(){
+        return String.valueOf(localStorage.getFloat("weight", 0f));
+    }
+
+    public String getUserHeight(){
+        return String.valueOf(localStorage.getFloat("height", 0f));
+    }
+
+    public String getUserGender(){
+        return localStorage.getString("gender", null);
+    }
+
+    public String getUserAge(){
+        String dob = localStorage.getString("dob", null);
+        LocalDate localDate = LocalDate.parse(dob, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        int age = Period.between(localDate, LocalDate.now()).getYears();
+
+        return String.valueOf(age);
     }
 
     //History
@@ -536,6 +795,7 @@ public class MVCModel {
 
         return false;
     }
+
     private static String getCurrentTimeStamp(){
         try {
 

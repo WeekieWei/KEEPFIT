@@ -45,17 +45,28 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        homeFragmentView = new HomeFragmentView(HomeFragment.this, null);
-        homeFragmentView.initializeViews();
+        homeFragmentView = new HomeFragmentView(HomeFragment.this);
         homeFragmentController = new HomeFragmentController(HomeFragment.this, homeFragmentView);
-
+        homeFragmentView.setMVCController(homeFragmentController);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return homeFragmentView.inflateFragmentLayout(inflater, container);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        homeFragmentView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        homeFragmentView.onPause();
     }
 
     public void signOut(View view){
@@ -64,35 +75,4 @@ public class HomeFragment extends Fragment {
         this.getActivity().finish();
     }
 
-
-    public void updateFirebase(View view){
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        OneTimeWorkRequest updateFirebaseWorkRequest = new OneTimeWorkRequest.Builder(UpdateFireBaseWorker.class)
-                .setConstraints(constraints)
-                .build();
-
-        WorkManager.getInstance(this.getActivity().getApplicationContext()).enqueue(updateFirebaseWorkRequest);
-
-    }
-
-    public void seeLocalDatabase(View view){
-        LocalDatabaseHelper localDatabaseHelper = new LocalDatabaseHelper(this.getActivity().getApplicationContext());
-
-        Cursor cursor = localDatabaseHelper.getData();
-
-        if(cursor.getCount() <= 0){
-            Log.i("CURSOR", "NULL");
-            return;
-        }
-
-        while(cursor.moveToNext()){
-
-            Log.i("Database", cursor.getString(0) + "\t:\t" + cursor.getInt(1));
-        }
-
-        cursor.close();
-    }
 }

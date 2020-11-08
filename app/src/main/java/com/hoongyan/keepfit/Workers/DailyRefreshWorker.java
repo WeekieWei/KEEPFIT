@@ -61,6 +61,8 @@ public class DailyRefreshWorker extends Worker {
             notificationManager.notify(Integer.parseInt(NOTIFICATION_CHANNEL_ID), getNotification(String.valueOf(0)));
 
             mvcModel.updateLocalDatabase((int) 0, new Date());
+            mvcModel.saveTotalCalorieInToLocalStorage(0);
+            mvcModel.saveTotalCalorieOutToLocalStorage(0);
 
             OneTimeWorkRequest dailyRefreshWorkRequest = new OneTimeWorkRequest.Builder(DailyRefreshWorker.class)
                     .setInitialDelay(getDelayToNextDay())

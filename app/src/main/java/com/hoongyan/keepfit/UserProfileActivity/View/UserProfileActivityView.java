@@ -1,7 +1,9 @@
 package com.hoongyan.keepfit.UserProfileActivity.View;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -138,6 +141,7 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
         createProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int gender;
                 boolean validateResult = true;
 
 
@@ -147,9 +151,11 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
                 | !userProfileActivityController.validateField(dobContainer)
                 | !userProfileActivityController.validateField(weightContainer)
                 | !userProfileActivityController.validateField(heightContainer)
+                | !userProfileActivityController.validateWH(weightContainer, heightContainer)
                 | !userProfileActivityController.validateField(activityLevelContainer))
                     validateResult = false;
 
+                gender = genderButtonGroup.getCheckedButtonId() == R.id.maleButton ? 1 : 2;
 
                 if(fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
                     if (!userProfileActivityController.validateField(fatPercentageContainer))
@@ -172,7 +178,6 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
                     String firstName, lastName, dob;
                     double weight, height, fat, waist, neck, hip;
                     int activityLevel;
-
                     firstName = firstNameContainer.getEditText().getText().toString();
                     lastName = lastNameContainer.getEditText().getText().toString();
                     dob = dobContainer.getEditText().getText().toString();
@@ -182,18 +187,18 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
 
                     if (fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
                         fat = Double.parseDouble(fatPercentageContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(firstName, lastName, dob, weight,
+                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
                                 height, fat, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, activityLevel);
                     } else if (genderButtonGroup.getCheckedButtonId() == R.id.maleButton) {
                         waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
                         neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(firstName, lastName, dob, weight,
+                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
                                 height, Double.NEGATIVE_INFINITY, waist, neck, Double.NEGATIVE_INFINITY, activityLevel);
                     } else if (genderButtonGroup.getCheckedButtonId() == R.id.femaleButton) {
                         waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
                         neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
                         hip = Double.parseDouble(hipContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(firstName, lastName, dob, weight,
+                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
                                 height, Double.NEGATIVE_INFINITY, waist, neck, hip, activityLevel);
                     }
                 }
@@ -233,5 +238,38 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
         else
             userProfileActivity.startActivity(new Intent(userProfileActivity, UserProfileActivity.class));
         userProfileActivity.finish();
+    }
+
+    public void generateAlertDialog(double bmi, int weightAdjust) {
+
+        AlertDialog alertDialog = new AlertDialog.Builder(rootView.getContext()).create();
+
+
+        String title = "Your BMI: " + String.format("%.1f", bmi);
+
+        String message = "The app is set to automatically help you to ";
+        if (weightAdjust < 0) {
+            title += " (Overweight)";
+            message += "lose weight ";
+        } else if (weightAdjust > 0){
+            title += " (Underweight)";
+            message += "gain weight";
+        }else {
+            title += " (Healthy Weight)";
+            message += "maintain weight";
+        }
+        message += ", you can also change it in setting later.";
+
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                navigateToNewActivity(true);
+            }
+        });
+        alertDialog.show();
+
     }
 }

@@ -144,7 +144,7 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
         calorieGrid.setColumnCount(2);
 
         calorieTitle = new TextView(activity);
-        calorieTitle.setText("Calorie: ");
+        calorieTitle.setText("Calorie Burnt: ");
 
         calorieValue = new TextView(activity);
         calorieValue.setId(calorieViewID);
