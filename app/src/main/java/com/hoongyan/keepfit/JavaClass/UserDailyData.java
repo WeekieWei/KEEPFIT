@@ -5,11 +5,13 @@ import com.google.firebase.Timestamp;
 public class UserDailyData {
     private int steps;
     private float netCal;
+    private double weight;
     private Timestamp timestamp;
 
     public UserDailyData() {
         steps = 0;
         netCal = 0;
+        weight = 0;
         timestamp = null;
     }
 
@@ -31,6 +33,14 @@ public class UserDailyData {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     public int getSteps() {

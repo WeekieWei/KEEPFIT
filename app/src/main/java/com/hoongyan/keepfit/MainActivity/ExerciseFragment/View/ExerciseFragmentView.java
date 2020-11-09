@@ -130,7 +130,7 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
 
         durationVal = new EditText(activity);
         durationVal.setText(exerciseInfo.getDouble("duration") + "");
-        durationVal.setInputType(InputType.TYPE_CLASS_NUMBER);
+        durationVal.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         durationVal.setSelectAllOnFocus(true);
         durationVal.setMinimumWidth(10);
         durationVal.setMaxWidth(200);

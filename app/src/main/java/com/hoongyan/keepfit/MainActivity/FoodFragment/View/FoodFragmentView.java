@@ -135,7 +135,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
 
         foodQuantity = new EditText(activity);
         foodQuantity.setText(foodInfo.getDouble("serving_qty") + "");
-        foodQuantity.setInputType(InputType.TYPE_CLASS_NUMBER);
+        foodQuantity.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         foodQuantity.setSelectAllOnFocus(true);
         foodQuantity.setMinimumWidth(10);
         foodQuantity.setMaxWidth(200);

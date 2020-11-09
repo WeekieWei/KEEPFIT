@@ -8,11 +8,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -65,6 +68,8 @@ public class MVCModel {
     private LocalDatabaseHelper localDatabase;
 
     private ArrayList<BarDataSet> card3ChartDataSet;
+    private ArrayList<BarDataSet> card4BarDataSet;
+    private ArrayList<LineDataSet> card4LineDataSet;
 
 
     public interface AuthenticationCallBack {
@@ -80,7 +85,11 @@ public class MVCModel {
     }
 
     public interface NetCalFetcher{
-        void onDataFetched(ArrayList<BarEntry> barEntries, ArrayList<String> xAxisLabel);
+        void onDataFetched(ArrayList<BarEntry> barEntries, ArrayList<String> xAxisLabel, float avgNet, boolean isNotEmpty);
+    }
+
+    public interface Card4ChartFetcher{
+        void onDataFetched(ArrayList<BarEntry> barEntries, ArrayList<Entry> lineEntries, ArrayList<String> xAxisLabel, float weight, boolean isNotEmpty);
     }
 
     public MVCModel(Activity activity) {
@@ -92,6 +101,8 @@ public class MVCModel {
         localStorage = activity.getSharedPreferences("KEEPFIT Storage", MODE_PRIVATE);
         localDatabase = new LocalDatabaseHelper(activity.getApplicationContext());
         card3ChartDataSet = null;
+        card4BarDataSet = null;
+        card4LineDataSet = null;
     }
 
     public MVCModel(Context context, boolean firebaseAccess){
@@ -104,6 +115,8 @@ public class MVCModel {
         localStorage = context.getSharedPreferences("KEEPFIT Storage", MODE_PRIVATE);
         localDatabase = new LocalDatabaseHelper(context);
         card3ChartDataSet = null;
+        card4BarDataSet = null;
+        card4LineDataSet = null;
     }
 
     public void setDatabaseReference(){
@@ -234,6 +247,7 @@ public class MVCModel {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     status.onResultReturn(true);
+                    localStorage.edit().putBoolean("requestUpdateWeightToFirebase", true).apply();
                 }else
                     status.onResultReturn(false);
             }
@@ -248,6 +262,7 @@ public class MVCModel {
         localStorage.edit().putFloat("height", (float) userProfile.getHeight()).apply();
         localStorage.edit().putString("gender", userProfile.getGender()).apply();
         localStorage.edit().putString("dob", userProfile.getDob()).apply();
+        localStorage.edit().putInt("activityLevel", userProfile.getActivityLevel()).apply();
     }
 
     //HOME
@@ -335,6 +350,11 @@ public class MVCModel {
                         }
                     });
                 }else{
+                    if(localStorage.getBoolean("requestUpdateWeightToFirebase", false)){
+                        userDailyData.setWeight(localStorage.getFloat("weight", 0f));
+                        localStorage.edit().putBoolean("requestUpdateWeightToFirebase", false).apply();
+                    }
+
                     db_userProfile.collection("history").document(dateStr).set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -370,10 +390,9 @@ public class MVCModel {
                 && localStorage.contains("weight")
                 && localStorage.contains("height")
                 && localStorage.contains("gender")
-                && localStorage.contains("dob");
+                && localStorage.contains("dob")
+                && localStorage.contains("activityLevel");
     }
-
-
 
     public UserHomePageData getUserHomePageData(){
         int currentStep = (int) localStorage.getFloat("currentSteps", 0f);
@@ -382,11 +401,11 @@ public class MVCModel {
         if(!localStorage.contains("totalCalIn") || !localStorage.contains("totalCalOut"))
             loadTotalCalorieInOutToLocalStorage();
         float totalCalIn = localStorage.getFloat("totalCalIn", 0f);
-        float totalCalOut = localStorage.getFloat("totalCalOut", 0f);
+        float totalCalOut = localStorage.getFloat("totalCalOut", 0f) + currentStep * 0.04f;
         float totalRequired = localStorage.getFloat("calRequired", 0f);
         float weightAdjust = localStorage.getFloat("weightAdjust", 0f);
         float target = totalRequired + weightAdjust;
-        float netCal = -1 * (target - totalCalIn + totalCalOut + currentStep * 0.04f); //another copy up there
+        float netCal = -1 * (target - totalCalIn + totalCalOut); //another copy up there
 
         String card2_5Text = "Your daily target calorie is " + String.format("%.2f", target) + " cal. ";
         if(LocalTime.now().getHour() >= 18) {
@@ -449,6 +468,9 @@ public class MVCModel {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 if(task.isSuccessful()){
                                     int i = 0;
+                                    int n = 0;
+                                    float avgNet = 0;
+                                    boolean isNotEmpty = false;
 
                                     ArrayList<BarEntry> valueSet = new ArrayList<>();
                                     ArrayList<String> xAxisLabel = new ArrayList<>();
@@ -464,17 +486,24 @@ public class MVCModel {
 
                                     for(QueryDocumentSnapshot document : result){
                                         UserDailyData userDailyData = document.toObject(UserDailyData.class);
-                                        valueSet.add(new BarEntry(i, userDailyData.getNetCal()));
+                                        float netCal = userDailyData.getNetCal();
+                                        valueSet.add(new BarEntry(i, netCal));
+                                        avgNet += netCal;
 
                                         String date = new SimpleDateFormat("dd/MM")
                                                 .format(userDailyData.getTimestamp().toDate());
 
                                         xAxisLabel.add(date);
                                         i++;
+                                        n++;
                                     }
 
-                                    fetcher.onDataFetched(valueSet, xAxisLabel);
-                                    Log.d("VALUE SET", valueSet.toString());
+                                    if(n > 0){
+                                        avgNet /= n;
+                                        isNotEmpty = true;
+                                    }
+
+                                    fetcher.onDataFetched(valueSet, xAxisLabel, avgNet, isNotEmpty);
                                     localStorage.edit().putBoolean("card3ChartNeedUpdate", false).apply();
                                 }
                             }
@@ -484,6 +513,138 @@ public class MVCModel {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    public void updateUserWeight(TaskResultStatus status, Float newWeight){
+
+        float height = localStorage.getFloat("height", 0f);
+
+        float bmi = newWeight / height / height * 10000;
+
+        localStorage.edit().putFloat("weight", newWeight).apply();
+        localStorage.edit().putFloat("bmi", bmi).apply();
+
+        String dob = localStorage.getString("dob", "");
+
+        //Age
+        LocalDate localDate = LocalDate.parse(dob, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        int age = Period.between(localDate, LocalDate.now()).getYears();
+
+        String gender = localStorage.getString("gender", "");
+
+        //Daily Calorie Required calculation
+        //Reference: https://www.calculator.net/calorie-calculator.html
+
+        float calRequired;
+
+        if(gender.equals("Male")){
+            //Mifflin-St Jeor Equation
+            calRequired = 10 * newWeight + 6.25f * height - 5 * age + 5;
+        }else{
+            calRequired = 10 * newWeight + 6.25f * height - 5 * age - 161;
+        }
+
+        int activityLevel = localStorage.getInt("activityLevel", 0);
+
+        switch(activityLevel){
+            case 1 : calRequired *= 1.2;
+                break;
+            case 2 : calRequired *= 1.375;
+                break;
+            case 3 : calRequired *= 1.55;
+                break;
+            case 4 : calRequired *= 1.725;
+                break;
+            case 5 : calRequired *= 1.9;
+                break;
+        }
+
+        localStorage.edit().putFloat("calRequired", calRequired).apply();
+
+        int weightAdjust;
+        if(bmi < 18.5){ //Gain Weight Constant
+            weightAdjust = 500;
+        }else if(bmi > 25){ //Lose Weight Constant
+            weightAdjust = -500;
+        }else{ //Maintain Weight;
+            weightAdjust = 0;
+        }
+
+        localStorage.edit().putFloat("weightAdjust", weightAdjust).apply();
+
+        db_userProfile.update("bmi", bmi, "calRequired", calRequired, "weight", newWeight, "weightAdjust", weightAdjust)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                status.onResultReturn(task.isSuccessful());
+            }
+        });
+
+        localStorage.edit().putBoolean("requestUpdateWeightToFirebase", true).apply();
+        localStorage.edit().putBoolean("requestUpdateNewWeight", false).apply();
+    }
+
+    public void getCard4ChartData(Card4ChartFetcher fetcher){
+        if(card4BarDataSet == null || card4LineDataSet == null || localStorage.getBoolean("card4ChartNeedUpdate", true)) {
+            card4BarDataSet = new ArrayList<>();
+            card4LineDataSet = new ArrayList<>();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String today = dateFormat.format(new Date());
+
+            LocalDate last90Days = LocalDate.now().minus(90, ChronoUnit.DAYS);
+
+            Date last90DaysDate = Date.from(last90Days.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            try {
+                Date dateToday = dateFormat.parse(today);
+
+                db_userProfile.collection("history").whereLessThan("timestamp", dateToday)
+                        .whereGreaterThanOrEqualTo("timestamp", last90DaysDate).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    int i = 0;
+                                    ArrayList<BarEntry> barEntries = new ArrayList<>(); //net Cal
+                                    ArrayList<Entry>  lineEntries = new ArrayList<>(); //Weight
+                                    ArrayList<String> xAxisLabel = new ArrayList<>();
+
+                                    QuerySnapshot result = task.getResult();
+
+                                    boolean isNotEmpty = !result.isEmpty();
+
+                                    for(QueryDocumentSnapshot document : result){
+                                        UserDailyData userDailyData = document.toObject(UserDailyData.class);
+                                        float netCal = userDailyData.getNetCal();
+                                        barEntries.add(new BarEntry(i, netCal));
+
+                                        double weight = userDailyData.getWeight();
+                                        if(weight > 0)
+                                            lineEntries.add(new Entry(i, (float) weight));
+
+                                        String date = new SimpleDateFormat("dd/MM")
+                                                .format(userDailyData.getTimestamp().toDate());
+
+                                        xAxisLabel.add(date);
+                                        i++;
+                                    }
+
+                                    float weight = -1;
+                                    if(localStorage.getBoolean("requestUpdateNewWeight", false)){
+                                        weight = localStorage.getFloat("weight", 0f);
+                                    }
+
+                                    fetcher.onDataFetched(barEntries, lineEntries, xAxisLabel, weight, isNotEmpty);
+                                    localStorage.edit().putBoolean("card4ChartNeedUpdate", false).apply();
+                                }
+                            }
+                        });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
 
         }
@@ -647,6 +808,7 @@ public class MVCModel {
 
     public void notifyResetSuccess(){
         localStorage.edit().putString("Debug_LastDailyResetTrigger", getCurrentTimeStamp()).apply();
+        localStorage.edit().putBoolean("requestUpdateNewWeight", true).apply();
     }
 
     public String getLastDailyResetTrigger(){
@@ -729,6 +891,10 @@ public class MVCModel {
     public String getUserGender(){
         return localStorage.getString("gender", null);
     }
+
+    public float getUserBmi(){return localStorage.getFloat("bmi", 0f);}
+
+    public float getUserWeightAdjust(){return localStorage.getFloat("weightAdjust", 0f);}
 
     public String getUserAge(){
         String dob = localStorage.getString("dob", null);
