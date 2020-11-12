@@ -516,14 +516,14 @@ public class MVCModel {
         }
     }
 
-    public void updateUserWeight(TaskResultStatus status, Float newWeight){
+    public void updateUserWeight(TaskResultStatus status, double newWeight){
 
         float height = localStorage.getFloat("height", 0f);
 
-        float bmi = newWeight / height / height * 10000;
+        double bmi = newWeight / height / height * 10000;
 
-        localStorage.edit().putFloat("weight", newWeight).apply();
-        localStorage.edit().putFloat("bmi", bmi).apply();
+        localStorage.edit().putFloat("weight", (float) newWeight).apply();
+        localStorage.edit().putFloat("bmi", (float) bmi).apply();
 
         String dob = localStorage.getString("dob", "");
 
@@ -536,13 +536,13 @@ public class MVCModel {
         //Daily Calorie Required calculation
         //Reference: https://www.calculator.net/calorie-calculator.html
 
-        float calRequired;
+        double calRequired;
 
         if(gender.equals("Male")){
             //Mifflin-St Jeor Equation
-            calRequired = 10 * newWeight + 6.25f * height - 5 * age + 5;
+            calRequired = 10 * newWeight + 6.25 * height - 5 * age + 5;
         }else{
-            calRequired = 10 * newWeight + 6.25f * height - 5 * age - 161;
+            calRequired = 10 * newWeight + 6.25 * height - 5 * age - 161;
         }
 
         int activityLevel = localStorage.getInt("activityLevel", 0);
@@ -560,7 +560,7 @@ public class MVCModel {
                 break;
         }
 
-        localStorage.edit().putFloat("calRequired", calRequired).apply();
+        localStorage.edit().putFloat("calRequired", (float) calRequired).apply();
 
         int weightAdjust;
         if(bmi < 18.5){ //Gain Weight Constant

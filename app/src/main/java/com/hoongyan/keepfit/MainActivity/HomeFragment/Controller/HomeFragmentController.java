@@ -112,6 +112,7 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
 
                 LineDataSet lineDataSet = new LineDataSet(lineEntries, "Weight");
                 lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
                 lineDataSet.setColor(Color.BLUE);
                 lineDataSet.setCircleColor(Color.BLUE);
 
@@ -125,7 +126,7 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
         });
     }
 
-    public boolean updateWeight(Float newWeight){
+    public boolean updateWeight(double newWeight){
         if(isOnline()){
             mvcModel.updateUserWeight(new MVCModel.TaskResultStatus() {
                 @Override

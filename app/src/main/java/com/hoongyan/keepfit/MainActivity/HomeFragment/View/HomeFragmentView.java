@@ -139,7 +139,7 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         XAxis xAxis2 = card4Chart.getXAxis();
         xAxis2.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis2.setLabelRotationAngle(10f);
-        card4Chart.getAxisLeft().setAxisMinimum(0f);
+//        card4Chart.getAxisLeft().setAxisMinimum(0f);
         card4Chart.getDescription().setEnabled(false);
 
         homeFragmentController.getUpdatedHomePageData();
