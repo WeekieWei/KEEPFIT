@@ -199,64 +199,74 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
     }
 
     public void bindDataToCard3Chart(BarData barData, ArrayList<String> xAxisLabel, float avgNet, boolean isNotEmpty){
-        fragment.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(isNotEmpty) {
-                    card3.setVisibility(View.VISIBLE);
-                    card3Chart.getXAxis().setValueFormatter(new ValueFormatter() {
-                        @Override
-                        public String getAxisLabel(float value, AxisBase axis) {
-                            return xAxisLabel.get((int) value);
+        try {
+            fragment.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (isNotEmpty) {
+                        card3.setVisibility(View.VISIBLE);
+                        card3Chart.getXAxis().setValueFormatter(new ValueFormatter() {
+                            @Override
+                            public String getAxisLabel(float value, AxisBase axis) {
+                                return xAxisLabel.get((int) value);
+                            }
+                        });
+                        card3Chart.setData(barData);
+                        card3Chart.setFitBars(true);
+                        card3Chart.animateXY(2000, 5000);
+                        card3Chart.invalidate();
+
+                        String card3Text = "Your average net calories is " + String.format("%.2f", avgNet)
+                                + " cal, ";
+
+                        if (Math.abs(avgNet) < 200) {
+                            card3Text += "which is about right, keep going the same lifestyle.";
+                        } else if (avgNet < 0) {
+                            card3Text += "which means you generally do not have enough calorie to stay healthy every day, eat more or do less extensive exercise.";
+                        } else {
+                            card3Text += "which means you generally have extra calorie every day, eat lesser or do more extensive exercise.";
                         }
-                    });
-                    card3Chart.setData(barData);
-                    card3Chart.setFitBars(true);
-                    card3Chart.animateXY(2000, 5000);
-                    card3Chart.invalidate();
 
-                    String card3Text = "Your average net calories is " + String.format("%.2f", avgNet)
-                            + " cal, ";
-
-                    if (Math.abs(avgNet) < 200) {
-                        card3Text += "which is about right, keep going the same lifestyle.";
-                    } else if (avgNet < 0) {
-                        card3Text += "which means you generally do not have enough calorie to stay healthy every day, eat more or do less extensive exercise.";
-                    } else {
-                        card3Text += "which means you generally have extra calorie every day, eat lesser or do more extensive exercise.";
+                        HomeFragmentView.this.card3Text.setText(card3Text);
                     }
-
-                    HomeFragmentView.this.card3Text.setText(card3Text);
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void bindDataToCard4Chart(CombinedData combinedData, ArrayList<String> xAxisLabel, float weight, boolean isNotEmpty){
-        fragment.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isNotEmpty) {
-                    card4.setVisibility(View.VISIBLE);
-
-                    if (weight != -1) {
-                        card4_1.setVisibility(View.VISIBLE);
-                        card4_1Text.setText("Current Weight: " + String.format("%.2f", weight) + " kg");
-                    }
+        try {
 
 
-                    card4Chart.getXAxis().setValueFormatter(new ValueFormatter() {
-                        @Override
-                        public String getAxisLabel(float value, AxisBase axis) {
-                            return xAxisLabel.get((int) value);
+            fragment.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (isNotEmpty) {
+                        card4.setVisibility(View.VISIBLE);
+
+                        if (weight != -1) {
+                            card4_1.setVisibility(View.VISIBLE);
+                            card4_1Text.setText("Current Weight: " + String.format("%.2f", weight) + " kg");
                         }
-                    });
-                    card4Chart.setData(combinedData);
-                    card4Chart.animateXY(2000, 5000);
-                    card4Chart.invalidate();
+
+
+                        card4Chart.getXAxis().setValueFormatter(new ValueFormatter() {
+                            @Override
+                            public String getAxisLabel(float value, AxisBase axis) {
+                                return xAxisLabel.get((int) value);
+                            }
+                        });
+                        card4Chart.setData(combinedData);
+                        card4Chart.animateXY(2000, 5000);
+                        card4Chart.invalidate();
+                    }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

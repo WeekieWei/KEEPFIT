@@ -5,7 +5,7 @@ public interface FoodFragmentControllerInterface {
 
     public void processNLP(String naturalLanguageText);
 
-    public void addMealToFirebase(String mealName, double totalCal);
+    public void addMealToFirebase(String mealName, double totalCal, int slot);
 
     public boolean isOnline();
 }

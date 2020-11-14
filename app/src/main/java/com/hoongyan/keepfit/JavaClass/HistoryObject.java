@@ -3,6 +3,7 @@ package com.hoongyan.keepfit.JavaClass;
 import com.google.firebase.Timestamp;
 
 public class HistoryObject {
+    private int foodSlotID;
     private String documentID;
     private int type;
     private String historyTitle;
@@ -19,6 +20,23 @@ public class HistoryObject {
         this.historyTitle = historyTitle;
         this.totalCalorie = totalCalorie;
         this.timestamp = timestamp;
+    }
+
+    public HistoryObject(int foodSlotID, String documentID, int type, String historyTitle, double totalCalorie, Timestamp timestamp) {
+        this.foodSlotID = foodSlotID;
+        this.documentID = documentID;
+        this.type = type;
+        this.historyTitle = historyTitle;
+        this.totalCalorie = totalCalorie;
+        this.timestamp = timestamp;
+    }
+
+    public int getFoodSlotID() {
+        return foodSlotID;
+    }
+
+    public void setFoodSlotID(int foodSlotID) {
+        this.foodSlotID = foodSlotID;
     }
 
     public String getDocumentID(){return documentID;}

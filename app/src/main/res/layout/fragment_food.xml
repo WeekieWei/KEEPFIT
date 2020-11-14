@@ -4,72 +4,564 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FF5E2B"
     tools:context=".MainActivity.FoodFragment.FoodFragment">
 
 
-    <LinearLayout
-        android:id="@+id/nlpLinearLayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#AAAAAA"
-            android:padding="8dp"
-            android:text="Natural Language Processing (NLP)"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/foodInputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:hint="Tell us what you have eaten:\n\nExample: I ate 2 pieces of biscuit and a cup of fresh milk"
-            android:inputType="textMultiLine"
-            android:maxLines="10"
-            android:minHeight="200dp" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/clearButton"
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/nlpCardView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_clear_button"
-                android:layout_marginEnd="8dp"
-                android:background="@null"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="50dp"
+                app:cardBackgroundColor="#D7FFBD5C">
 
-            <ImageButton
-                android:id="@+id/voiceButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_mic_button"
-                android:background="@null"/>
+                <LinearLayout
+                    android:id="@+id/nlpLinearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <ImageButton
-                android:id="@+id/proceedButton"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#8BC34A"
+                        android:padding="8dp"
+                        android:text="Natural Language Processing (NLP)"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/foodInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:hint="Tell us what you have eaten:\n\nExample: I ate 2 pieces of biscuit and a cup of fresh milk"
+                        android:inputType="textMultiLine"
+                        android:maxLines="10"
+                        android:minHeight="200dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/clearButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_clear_button"
+                            android:layout_marginEnd="8dp"
+                            android:background="@null"/>
+
+                        <ImageButton
+                            android:id="@+id/voiceButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mic_button"
+                            android:background="@null"/>
+
+                        <ImageButton
+                            android:id="@+id/proceedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_next_button"
+                            android:layout_marginHorizontal="8dp"
+                            android:background="@null" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/foodSlotCard"
+                android:visibility="gone"
+                app:cardBackgroundColor="#D7FFBD5C"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_next_button"
-                android:layout_marginHorizontal="8dp"
-                android:background="@null" />
+                android:layout_margin="8dp"
+                android:layout_gravity="bottom"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="50dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/foodSlotCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Food Portion"
+                        android:textSize="30sp"
+
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/foodSlotCardDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This is the suggested food portion that you may take"
+                        android:layout_margin="8dp"
+                        android:textSize="12sp"
+
+                        app:layout_constraintTop_toBottomOf="@+id/foodSlotCardTitle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+
+                        app:layout_constraintTop_toBottomOf="@id/foodSlotCardDescription">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot1Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot1Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot1ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Breakfast"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot1Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot1ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot1Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot1ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot1ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot1SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot1SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot2Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot2Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot2ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Morning Snack"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot2Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot2ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot2Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot2ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot2ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot2SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot2SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot3Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot3Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot3ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Lunch"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot3Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot3ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot3Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot3ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot3ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot3SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot3SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot4Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot4Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot4ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tea"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot4Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot4ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot4Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot4ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot4ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot4SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot4SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot5Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot5Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot5ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Dinner"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot5Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot5ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot5Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot5ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot5ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot5SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot5SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/slot6Card"
+                            app:cardBackgroundColor="#A8DE6A"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="50dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@+id/slot6Button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot6ProgressBar"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Supper"
+
+                                    app:layout_constraintStart_toEndOf="@id/slot6Button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot6ProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/slot6Percent"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="XX%"
+                                    android:textSize="20sp"
+
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toTopOf="@id/slot6ProgressBar"/>
+
+                                <ProgressBar
+                                    android:id="@+id/slot6ProgressBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:progressTint="@color/colorPrimary"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+                                    app:layout_constraintBottom_toTopOf="@id/slot6SmallText"/>
+
+                                <TextView
+                                    android:id="@+id/slot6SmallText"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="0dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="35/350 cal"
+                                    android:textSize="10sp"
+
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
+
+
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
 
-    </LinearLayout>
+
+    </ScrollView>
+
+
 
 
 

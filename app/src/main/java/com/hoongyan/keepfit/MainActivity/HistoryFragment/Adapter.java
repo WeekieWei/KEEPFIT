@@ -84,9 +84,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.HistoryViewHolder>{
         holder.description.setText(date);
         holder.calValue.setText(String.format("%.2f", currentItem.getTotalCalorie()) + " cal");
         switch (currentItem.getType()){
-            case 1 : holder.calValue.setTextColor(Color.GREEN);
+            case 1 : holder.calValue.setTextColor(Color.parseColor("#00a82d"));
             break;
-            case 2 : holder.calValue.setTextColor(Color.RED);
+            case 2 : holder.calValue.setTextColor(Color.parseColor("#FFFF0000"));
             break;
         }
 
@@ -107,7 +107,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.HistoryViewHolder>{
         holder.deleteButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                historyFragmentController.removeItemAtPosition(position, currentItem.getDocumentID());
+                historyFragmentController.removeItemAtPosition(position, currentItem.getDocumentID(), currentItem.getTimestamp().toDate(), currentItem.getFoodSlotID(), currentItem.getTotalCalorie());
                 return true;
             }
         });

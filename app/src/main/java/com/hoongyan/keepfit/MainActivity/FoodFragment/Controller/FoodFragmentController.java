@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -162,7 +163,7 @@ public class FoodFragmentController implements FoodFragmentControllerInterface{
     }
 
     @Override
-    public void addMealToFirebase(String mealName, double totalCal){
+    public void addMealToFirebase(String mealName, double totalCal, int slot){
 
         if(!isOnline()){
             foodFragmentView.notifyFirebaseUpdate(false);
@@ -174,7 +175,29 @@ public class FoodFragmentController implements FoodFragmentControllerInterface{
             public void onResultReturn(boolean result) {
                 foodFragmentView.notifyFirebaseUpdate(result);
             }
-        }, mealName, totalCal);
+        }, mealName, totalCal, slot);
+    }
+
+    public void requestUpdateCalSlots(){
+        int selectSlotIndex;
+        int hourNow = LocalTime.now().getHour();
+
+        if(hourNow < 4)
+            selectSlotIndex = 6;
+        else if(hourNow < 9)
+            selectSlotIndex = 1;
+        else if(hourNow < 12)
+            selectSlotIndex = 2;
+        else if(hourNow < 15)
+            selectSlotIndex = 3;
+        else if(hourNow < 18)
+            selectSlotIndex = 4;
+        else if(hourNow < 20)
+            selectSlotIndex = 5;
+        else
+            selectSlotIndex = 6;
+
+        foodFragmentView.updateCalSlotsData(mvcModel.getCalorieSlotsData(), selectSlotIndex);
     }
 
     @Override

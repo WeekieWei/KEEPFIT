@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
@@ -33,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.hoongyan.keepfit.JavaClass.CalorieSlotDataObject;
 import com.hoongyan.keepfit.JavaClass.HistoryObject;
 import com.hoongyan.keepfit.JavaClass.LocalDatabaseHelper;
 import com.hoongyan.keepfit.JavaClass.UserDailyData;
@@ -44,13 +43,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -255,14 +252,56 @@ public class MVCModel {
     }
 
     public void saveUserProfileToLocalStorage(UserProfile userProfile){
-        localStorage.edit().putFloat("calRequired", (float) userProfile.getCalRequired()).apply();
-        localStorage.edit().putFloat("weightAdjust", (float) userProfile.getWeightAdjust()).apply();
+
+        double calRequired = userProfile.getCalRequired();
+        int weightAdjust = userProfile.getWeightAdjust();
+
+        double target = calRequired + weightAdjust;
+
+        localStorage.edit().putFloat("calRequired", (float) calRequired).apply();
+        localStorage.edit().putFloat("weightAdjust", (float) weightAdjust).apply();
         localStorage.edit().putFloat("bmi", (float) userProfile.getBmi()).apply();
         localStorage.edit().putFloat("weight", (float) userProfile.getWeight()).apply();
         localStorage.edit().putFloat("height", (float) userProfile.getHeight()).apply();
         localStorage.edit().putString("gender", userProfile.getGender()).apply();
         localStorage.edit().putString("dob", userProfile.getDob()).apply();
         localStorage.edit().putInt("activityLevel", userProfile.getActivityLevel()).apply();
+
+        /*
+            Breakfast       4/15
+            Morning Snack   1/15
+            Lunch           4/15
+            Tea             1/15
+            Dinner          4/15
+            Supper          1/15
+         */
+
+        saveSlotCalSuggestedToLocalStorage(target);
+    }
+
+    private void saveSlotCalSuggestedToLocalStorage(double target) {
+        double slot1Cal = target * 4/15;
+        double slot2Cal = target * 1/15;
+        double slot3Cal = target * 4/15;
+        double slot4Cal = target * 1/15;
+        double slot5Cal = target * 4/15;
+        double slot6Cal = target * 1/15;
+
+        localStorage.edit().putFloat("slot1CalSuggested", (float) slot1Cal).apply();
+        localStorage.edit().putFloat("slot2CalSuggested", (float) slot2Cal).apply();
+        localStorage.edit().putFloat("slot3CalSuggested", (float) slot3Cal).apply();
+        localStorage.edit().putFloat("slot4CalSuggested", (float) slot4Cal).apply();
+        localStorage.edit().putFloat("slot5CalSuggested", (float) slot5Cal).apply();
+        localStorage.edit().putFloat("slot6CalSuggested", (float) slot6Cal).apply();
+    }
+
+    private void resetSlotCalTakenInLocalStorage(){
+        localStorage.edit().putFloat("slot1Taken", 0f).apply();
+        localStorage.edit().putFloat("slot2Taken", 0f).apply();
+        localStorage.edit().putFloat("slot3Taken", 0f).apply();
+        localStorage.edit().putFloat("slot4Taken", 0f).apply();
+        localStorage.edit().putFloat("slot5Taken", 0f).apply();
+        localStorage.edit().putFloat("slot6Taken", 0f).apply();
     }
 
     //HOME
@@ -377,10 +416,37 @@ public class MVCModel {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     saveUserProfileToLocalStorage(task.getResult().toObject(UserProfile.class));
+                    loadCalSlotTakenFromFirebase();
                     status.onResultReturn(true);
                 }
             }
         });
+    }
+
+    public void loadCalSlotTakenFromFirebase(){
+        Date todayDate = Date.from(Instant.now().truncatedTo(ChronoUnit.DAYS));
+
+        db_userProfile.collection("History").whereGreaterThanOrEqualTo("timestamp", todayDate).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            QuerySnapshot result = task.getResult();
+
+                            for(QueryDocumentSnapshot document : result){
+                                HistoryObject object = document.toObject(HistoryObject.class);
+                                if(object.getType() == 1){
+                                    String key = "slot" + object.getFoodSlotID() + "Taken";
+                                    float oldTaken = localStorage.getFloat(key, 0f);
+                                    float newTaken = oldTaken + (float) object.getTotalCalorie();
+                                    localStorage.edit().putFloat(key, newTaken).apply();
+                                }
+                            }
+                        }
+                    }
+                });
+
     }
 
     public boolean isUserProfileExistInLocalStorage(){
@@ -573,6 +639,8 @@ public class MVCModel {
 
         localStorage.edit().putFloat("weightAdjust", weightAdjust).apply();
 
+        saveSlotCalSuggestedToLocalStorage(calRequired + weightAdjust);
+
         db_userProfile.update("bmi", bmi, "calRequired", calRequired, "weight", newWeight, "weightAdjust", weightAdjust)
         .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -580,6 +648,8 @@ public class MVCModel {
                 status.onResultReturn(task.isSuccessful());
             }
         });
+
+
 
         localStorage.edit().putBoolean("requestUpdateWeightToFirebase", true).apply();
         localStorage.edit().putBoolean("requestUpdateNewWeight", false).apply();
@@ -809,6 +879,7 @@ public class MVCModel {
     public void notifyResetSuccess(){
         localStorage.edit().putString("Debug_LastDailyResetTrigger", getCurrentTimeStamp()).apply();
         localStorage.edit().putBoolean("requestUpdateNewWeight", true).apply();
+        resetSlotCalTakenInLocalStorage();
     }
 
     public String getLastDailyResetTrigger(){
@@ -841,11 +912,11 @@ public class MVCModel {
     }
 
     //FOOD
-    public void updateFood(TaskResultStatus resultStatus, String name, double totalCalorie){
+    public void updateFood(TaskResultStatus resultStatus, String name, double totalCalorie, int slot){
 
         String documentID = "F: " + getCurrentTimeStamp() + UUID.randomUUID();
 
-        HistoryObject obj = new HistoryObject(documentID,1, name, totalCalorie, new Timestamp(new Date()));
+        HistoryObject obj = new HistoryObject(slot, documentID,1, name, totalCalorie, new Timestamp(new Date()));
 
         db_userProfile.collection("History").document(documentID).set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -854,10 +925,68 @@ public class MVCModel {
                     float oldTotal = localStorage.getFloat("totalCalIn", 0f);
                     float newTotal = oldTotal + (float) totalCalorie;
                     saveTotalCalorieInToLocalStorage(newTotal);
+                    increaseSlotCal(slot, totalCalorie);
                 }
                 resultStatus.onResultReturn(task.isSuccessful());
             }
         });
+    }
+
+    public void increaseSlotCal(int slotIndex, double calorie){
+        float oldTaken;
+        double newTaken;
+        switch (slotIndex){
+            case 1 :
+                oldTaken = localStorage.getFloat("slot1Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot1Taken", (float) newTaken).apply();
+                break;
+            case 2 :
+                oldTaken = localStorage.getFloat("slot2Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot2Taken", (float) newTaken).apply();
+                break;
+            case 3 :
+                oldTaken = localStorage.getFloat("slot3Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot3Taken", (float) newTaken).apply();
+                break;
+            case 4 :
+                oldTaken = localStorage.getFloat("slot4Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot4Taken", (float) newTaken).apply();
+                break;
+            case 5 :
+                oldTaken = localStorage.getFloat("slot5Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot5Taken", (float) newTaken).apply();
+                break;
+            case 6 :
+                oldTaken = localStorage.getFloat("slot6Taken", 0f);
+                newTaken = oldTaken + calorie;
+                localStorage.edit().putFloat("slot6Taken", (float) newTaken).apply();
+                break;
+        }
+    }
+
+    public CalorieSlotDataObject getCalorieSlotsData(){
+        CalorieSlotDataObject calorieSlotDataObject = new CalorieSlotDataObject();
+
+        calorieSlotDataObject.setSlot1Suggested(localStorage.getFloat("slot1CalSuggested", 0f));
+        calorieSlotDataObject.setSlot2Suggested(localStorage.getFloat("slot2CalSuggested", 0f));
+        calorieSlotDataObject.setSlot3Suggested(localStorage.getFloat("slot3CalSuggested", 0f));
+        calorieSlotDataObject.setSlot4Suggested(localStorage.getFloat("slot4CalSuggested", 0f));
+        calorieSlotDataObject.setSlot5Suggested(localStorage.getFloat("slot5CalSuggested", 0f));
+        calorieSlotDataObject.setSlot6Suggested(localStorage.getFloat("slot6CalSuggested", 0f));
+
+        calorieSlotDataObject.setSlot1Taken(localStorage.getFloat("slot1Taken", 0f));
+        calorieSlotDataObject.setSlot2Taken(localStorage.getFloat("slot2Taken", 0f));
+        calorieSlotDataObject.setSlot3Taken(localStorage.getFloat("slot3Taken", 0f));
+        calorieSlotDataObject.setSlot4Taken(localStorage.getFloat("slot4Taken", 0f));
+        calorieSlotDataObject.setSlot5Taken(localStorage.getFloat("slot5Taken", 0f));
+        calorieSlotDataObject.setSlot6Taken(localStorage.getFloat("slot6Taken", 0f));
+
+        return calorieSlotDataObject;
     }
 
     //EXERCISE
@@ -922,7 +1051,7 @@ public class MVCModel {
         });
     }
 
-    public void removeHistoryItem(TaskResultStatus status, String documentID){
+    public void removeHistoryItem(TaskResultStatus status, String documentID, int slotIndex, double totalCal){
         if(!isOnline()){
             status.onResultReturn(false);
             return;
@@ -931,6 +1060,12 @@ public class MVCModel {
         db_userProfile.collection("History").document(documentID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                if(slotIndex != 0){
+                    String key = "slot" + slotIndex + "Taken";
+                    float oldCal = localStorage.getFloat(key, 0f);
+                    float newCal = oldCal - (float) totalCal;
+                    localStorage.edit().putFloat(key, newCal).apply();
+                }
                 status.onResultReturn(task.isSuccessful());
             }
         });

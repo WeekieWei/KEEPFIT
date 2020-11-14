@@ -18,13 +18,19 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.hoongyan.keepfit.JavaClass.CalorieSlotDataObject;
 import com.hoongyan.keepfit.MainActivity.FoodFragment.Controller.FoodFragmentController;
 import com.hoongyan.keepfit.R;
 
@@ -48,11 +54,18 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
     private Map<Integer, JSONObject> foodMap;
 
     //Views
+    CardView cardView;
     LinearLayout nlpLinearLayout, foodInputLinearLayout;
     EditText foodInputEditText;
     ImageButton voiceButton, proceedButton, clearButton;
     Button submitButton;
     TextView loadingTextView;
+
+    CardView foodSlotCard, slot1Card, slot2Card, slot3Card, slot4Card, slot5Card, slot6Card;
+    RadioButton slot1Button, slot2Button, slot3Button, slot4Button, slot5Button, slot6Button;
+    TextView slot1Percent, slot2Percent, slot3Percent, slot4Percent, slot5Percent, slot6Percent;
+    ProgressBar slot1ProgressBar, slot2ProgressBar, slot3ProgressBar, slot4ProgressBar, slot5ProgressBar, slot6ProgressBar;
+    TextView slot1SmallText, slot2SmallText, slot3SmallText, slot4SmallText, slot5SmallText, slot6SmallText;
 
 
     public FoodFragmentView(Fragment fragment){
@@ -75,6 +88,8 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
 
     @Override
     public void nlpLayoutHide(){
+        foodSlotCard.setVisibility(View.GONE);
+        cardView.setVisibility(View.GONE);
         nlpLinearLayout.setVisibility(View.GONE);
         loadingTextView.setVisibility(View.VISIBLE);
         foodInputLinearLayout.setVisibility(View.VISIBLE);
@@ -83,6 +98,8 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
 
     @Override
     public void nlpLayoutReveal(){
+        foodSlotCard.setVisibility(View.VISIBLE);
+        cardView.setVisibility(View.VISIBLE);
         nlpLinearLayout.setVisibility(View.VISIBLE);
         foodInputEditText.setText("");
         foodInputLinearLayout.setVisibility(View.GONE);
@@ -121,6 +138,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
 
 
         foodLayout = new LinearLayout(activity);
+        foodLayout.setBackgroundColor(Color.parseColor("#D7FFBD5C"));
         foodLayout.setOrientation(LinearLayout.VERTICAL);
 
         //1st Row
@@ -274,6 +292,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
     @Override
     public void initializeViews() {
         loadingTextView = rootView.findViewById(R.id.loadingTextView);
+        cardView = rootView.findViewById(R.id.nlpCardView);
         nlpLinearLayout = rootView.findViewById(R.id.nlpLinearLayout);
         foodInputLinearLayout = rootView.findViewById(R.id.foodInputLinearLayout);
         foodInputEditText = rootView.findViewById(R.id.foodInputEditText);
@@ -412,9 +431,225 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
                 }
                 submitButton.setEnabled(false);
                 loadingTextView.setVisibility(View.VISIBLE);
-                foodFragmentController.addMealToFirebase(mealName, totalCal);
+                foodFragmentController.addMealToFirebase(mealName, totalCal, getSelectedRadioButtonSlot());
             }
         });
+
+        foodSlotCard = rootView.findViewById(R.id.foodSlotCard);
+        foodSlotCard.setVisibility(View.VISIBLE);
+
+        slot1Card = rootView.findViewById(R.id.slot1Card);
+        slot1Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(1);
+            }
+        });
+        slot1Button = rootView.findViewById(R.id.slot1Button);
+        slot1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(1);
+            }
+        });
+
+        slot2Card = rootView.findViewById(R.id.slot2Card);
+        slot2Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(2);
+            }
+        });
+        slot2Button = rootView.findViewById(R.id.slot2Button);
+        slot2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(2);
+            }
+        });
+
+        slot3Card = rootView.findViewById(R.id.slot3Card);
+        slot3Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(3);
+            }
+        });
+        slot3Button = rootView.findViewById(R.id.slot3Button);
+        slot3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(3);
+            }
+        });
+
+        slot4Card = rootView.findViewById(R.id.slot4Card);
+        slot4Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(4);
+            }
+        });
+        slot4Button = rootView.findViewById(R.id.slot4Button);
+        slot4Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(4);
+            }
+        });
+
+        slot5Card = rootView.findViewById(R.id.slot5Card);
+        slot5Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(5);
+            }
+        });
+        slot5Button = rootView.findViewById(R.id.slot5Button);
+        slot5Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(5);
+            }
+        });
+
+        slot6Card = rootView.findViewById(R.id.slot6Card);
+        slot6Card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(6);
+            }
+        });
+        slot6Button = rootView.findViewById(R.id.slot6Button);
+        slot6Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkRadioButton(6);
+            }
+        });
+
+        slot1Percent = rootView.findViewById(R.id.slot1Percent);
+        slot2Percent = rootView.findViewById(R.id.slot2Percent);
+        slot3Percent = rootView.findViewById(R.id.slot3Percent);
+        slot4Percent = rootView.findViewById(R.id.slot4Percent);
+        slot5Percent = rootView.findViewById(R.id.slot5Percent);
+        slot6Percent = rootView.findViewById(R.id.slot6Percent);
+
+        slot1SmallText = rootView.findViewById(R.id.slot1SmallText);
+        slot2SmallText = rootView.findViewById(R.id.slot2SmallText);
+        slot3SmallText = rootView.findViewById(R.id.slot3SmallText);
+        slot4SmallText = rootView.findViewById(R.id.slot4SmallText);
+        slot5SmallText = rootView.findViewById(R.id.slot5SmallText);
+        slot6SmallText = rootView.findViewById(R.id.slot6SmallText);
+
+        slot1ProgressBar = rootView.findViewById(R.id.slot1ProgressBar);
+        slot2ProgressBar = rootView.findViewById(R.id.slot2ProgressBar);
+        slot3ProgressBar = rootView.findViewById(R.id.slot3ProgressBar);
+        slot4ProgressBar = rootView.findViewById(R.id.slot4ProgressBar);
+        slot5ProgressBar = rootView.findViewById(R.id.slot5ProgressBar);
+        slot6ProgressBar = rootView.findViewById(R.id.slot6ProgressBar);
+
+        foodFragmentController.requestUpdateCalSlots();
+    }
+
+    public void updateCalSlotsData(CalorieSlotDataObject object, int selectedSlotIndex){
+        float slot1Suggested = object.getSlot1Suggested();
+        float slot2Suggested = object.getSlot2Suggested();
+        float slot3Suggested = object.getSlot3Suggested();
+        float slot4Suggested = object.getSlot4Suggested();
+        float slot5Suggested = object.getSlot5Suggested();
+        float slot6Suggested = object.getSlot6Suggested();
+        float slot1Taken = object.getSlot1Taken();
+        float slot2Taken = object.getSlot2Taken();
+        float slot3Taken = object.getSlot3Taken();
+        float slot4Taken = object.getSlot4Taken();
+        float slot5Taken = object.getSlot5Taken();
+        float slot6Taken = object.getSlot6Taken();
+
+        String text1 = (int) slot1Taken + "/" + (int) slot1Suggested + " cal";
+        String text2 = (int) slot2Taken + "/" + (int) slot2Suggested + " cal";
+        String text3 = (int) slot3Taken + "/" + (int) slot3Suggested + " cal";
+        String text4 = (int) slot4Taken + "/" + (int) slot4Suggested + " cal";
+        String text5 = (int) slot5Taken + "/" + (int) slot5Suggested + " cal";
+        String text6 = (int) slot6Taken + "/" + (int) slot6Suggested + " cal";
+        slot1SmallText.setText(text1);
+        slot2SmallText.setText(text2);
+        slot3SmallText.setText(text3);
+        slot4SmallText.setText(text4);
+        slot5SmallText.setText(text5);
+        slot6SmallText.setText(text6);
+
+        float slot1Percent = slot1Taken / slot1Suggested * 100;
+        float slot2Percent = slot2Taken / slot2Suggested * 100;
+        float slot3Percent = slot3Taken / slot3Suggested * 100;
+        float slot4Percent = slot4Taken / slot4Suggested * 100;
+        float slot5Percent = slot5Taken / slot5Suggested * 100;
+        float slot6Percent = slot6Taken / slot6Suggested * 100;
+
+        this.slot1Percent.setText((int) slot1Percent + "%");
+        this.slot2Percent.setText((int) slot2Percent + "%");
+        this.slot3Percent.setText((int) slot3Percent + "%");
+        this.slot4Percent.setText((int) slot4Percent + "%");
+        this.slot5Percent.setText((int) slot5Percent + "%");
+        this.slot6Percent.setText((int) slot6Percent + "%");
+
+        slot1ProgressBar.setProgress((int) slot1Percent, true);
+        slot2ProgressBar.setProgress((int) slot2Percent, true);
+        slot3ProgressBar.setProgress((int) slot3Percent, true);
+        slot4ProgressBar.setProgress((int) slot4Percent, true);
+        slot5ProgressBar.setProgress((int) slot5Percent, true);
+        slot6ProgressBar.setProgress((int) slot6Percent, true);
+
+        checkRadioButton(selectedSlotIndex);
+
+    }
+
+    private int getSelectedRadioButtonSlot(){
+        if(slot1Button.isChecked())
+            return 1;
+        else if(slot2Button.isChecked())
+            return 2;
+        else if(slot3Button.isChecked())
+            return 3;
+        else if(slot4Button.isChecked())
+            return 4;
+        else if(slot5Button.isChecked())
+            return 5;
+        else if(slot6Button.isChecked())
+            return 6;
+        else
+            return 0;
+    }
+
+    private void checkRadioButton(int slotButtonIndex) {
+        slot1Button.setChecked(false);
+        slot2Button.setChecked(false);
+        slot3Button.setChecked(false);
+        slot4Button.setChecked(false);
+        slot5Button.setChecked(false);
+        slot6Button.setChecked(false);
+
+        switch (slotButtonIndex) {
+            case 1:
+                slot1Button.setChecked(true);
+                break;
+            case 2:
+                slot2Button.setChecked(true);
+                break;
+            case 3:
+                slot3Button.setChecked(true);
+                break;
+            case 4:
+                slot4Button.setChecked(true);
+                break;
+            case 5:
+                slot5Button.setChecked(true);
+                break;
+            case 6:
+                slot6Button.setChecked(true);
+                break;
+            default:
+        }
     }
 
     private float distance(float x1, float y1, float x2, float y2) {
@@ -448,6 +683,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
             Toast.makeText(activity.getApplicationContext(), "Meal is added", Toast.LENGTH_SHORT).show();
             foodInputLinearLayout.removeViewsInLayout(0, foodMap.size());
             foodMap.clear();
+            foodFragmentController.requestUpdateCalSlots();
         }else{
             Toast.makeText(activity.getApplicationContext(), "ERROR!! No internet connection", Toast.LENGTH_SHORT).show();
         }

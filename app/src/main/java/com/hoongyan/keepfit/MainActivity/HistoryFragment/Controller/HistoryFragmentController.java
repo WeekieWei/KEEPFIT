@@ -17,7 +17,10 @@ import com.hoongyan.keepfit.MainActivity.HistoryFragment.Adapter;
 import com.hoongyan.keepfit.MainActivity.HistoryFragment.View.HistoryFragmentView;
 import com.hoongyan.keepfit.R;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HistoryFragmentController implements HistoryFragmentControllerInterface {
 
@@ -44,7 +47,17 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
         });
     }
 
-    public void removeItemAtPosition(int position, String documentID){
+    public void removeItemAtPosition(int position, String documentID, Date itemDate, int foodSlotID, double totalCal){
+
+        Instant itemInstant = itemDate.toInstant().truncatedTo(ChronoUnit.DAYS);
+        Instant nowInstant = Instant.now().truncatedTo(ChronoUnit.DAYS);
+        int slotIndex = 0;
+
+
+        if(nowInstant.compareTo(itemInstant) == 0){
+            slotIndex = foodSlotID;
+        }
+
         mvcModel.removeHistoryItem(new MVCModel.TaskResultStatus() {
             @Override
             public void onResultReturn(boolean result) {
@@ -55,7 +68,7 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
                 }else
                     Toast.makeText(historyFragmentView.getRootView().getContext(), "Could not delete without internet", Toast.LENGTH_SHORT).show();
             }
-        }, documentID);
+        }, documentID, slotIndex, totalCal);
     }
 
     public void editItemAtPosition(int position, String documentID){

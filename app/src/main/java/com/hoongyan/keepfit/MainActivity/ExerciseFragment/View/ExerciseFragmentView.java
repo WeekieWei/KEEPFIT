@@ -2,6 +2,7 @@ package com.hoongyan.keepfit.MainActivity.ExerciseFragment.View;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.speech.RecognizerIntent;
 import android.text.InputType;
 import android.util.Log;
@@ -107,6 +108,7 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
 
 
         exerciseLayout = new LinearLayout(activity);
+        exerciseLayout.setBackgroundColor(Color.parseColor("#D7FFBD5C"));
         exerciseLayout.setOrientation(LinearLayout.VERTICAL);
 
         //1st Row
