@@ -27,6 +27,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -339,7 +340,7 @@ public class MVCModel {
         }
     }
 
-    public void updateFirebase(TaskResultStatus resultStatus){
+    public void updateFirebase(TaskResultStatus resultStatus, boolean force){
 
         Cursor cursor = localDatabase.getData();
 
@@ -374,10 +375,12 @@ public class MVCModel {
 
                 if(dateStr.equals(today)){
 
-                    if(steps == localStorage.getInt("lastFirebaseUpdateValue", -1)
-                    && netCal == localStorage.getFloat("lastFirebaseUpdateValue2", -1f)){
-                        Log.i("FirebaseUpdate", "Current value same with last update value");
-                        break;
+                    if(!force){
+                        if(steps == localStorage.getInt("lastFirebaseUpdateValue", -1)
+                        && netCal == localStorage.getFloat("lastFirebaseUpdateValue2", -1f)){
+                            Log.i("FirebaseUpdate", "Current value same with last update value");
+                            break;
+                        }
                     }
 
                     db_userData.document("dailyData").set(userDailyData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -1051,7 +1054,7 @@ public class MVCModel {
         });
     }
 
-    public void removeHistoryItem(TaskResultStatus status, String documentID, int slotIndex, double totalCal){
+    public void removeHistoryItem(TaskResultStatus status, String documentID, int slotIndex, double totalCal, int type, Instant itemInstant){
         if(!isOnline()){
             status.onResultReturn(false);
             return;
@@ -1060,11 +1063,46 @@ public class MVCModel {
         db_userProfile.collection("History").document(documentID).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+
+
                 if(slotIndex != 0){
-                    String key = "slot" + slotIndex + "Taken";
-                    float oldCal = localStorage.getFloat(key, 0f);
-                    float newCal = oldCal - (float) totalCal;
-                    localStorage.edit().putFloat(key, newCal).apply();
+                    //Today
+                    float oldCal;
+                    float newCal;
+
+                    if(type == 1) {
+                        String key = "slot" + slotIndex + "Taken";
+                        oldCal = localStorage.getFloat(key, 0f);
+                        newCal = oldCal - (float) totalCal;
+                        localStorage.edit().putFloat(key, newCal).apply();
+
+                        oldCal = localStorage.getFloat("totalCalIn", 0f);
+                        newCal = oldCal - (float) totalCal;
+                        localStorage.edit().putFloat("totalCalIn", newCal).apply();
+                    }else{
+                        oldCal = localStorage.getFloat("totalCalOut", 0f);
+                        newCal = oldCal - (float) totalCal;
+                        localStorage.edit().putFloat("totalCalOut", newCal).apply();
+                    }
+                }else{
+                    //Not Today
+                    updateFirebase(new TaskResultStatus() {
+                        @Override
+                        public void onResultReturn(boolean result) {
+                            if(result){
+
+                                String documentID = new SimpleDateFormat("yyyy-MM-dd").format(Date.from(itemInstant));
+                                double value;
+                                value = type == 1 ? -1 * totalCal : totalCal;
+
+                                Log.i("ID", documentID + " VALUE: " + value);
+
+                                db_userProfile.collection("history").document(documentID)
+                                        .update("netCal", FieldValue.increment(value));
+
+                            }
+                        }
+                    }, true);
                 }
                 status.onResultReturn(task.isSuccessful());
             }

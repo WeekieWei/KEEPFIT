@@ -107,7 +107,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.HistoryViewHolder>{
         holder.deleteButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                historyFragmentController.removeItemAtPosition(position, currentItem.getDocumentID(), currentItem.getTimestamp().toDate(), currentItem.getFoodSlotID(), currentItem.getTotalCalorie());
+                historyFragmentController.removeItemAtPosition(position, currentItem.getDocumentID(), currentItem.getTimestamp().toDate(), currentItem.getFoodSlotID(), currentItem.getTotalCalorie(), currentItem.getType());
                 return true;
             }
         });

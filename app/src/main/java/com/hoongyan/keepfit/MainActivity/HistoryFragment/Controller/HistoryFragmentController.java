@@ -47,15 +47,15 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
         });
     }
 
-    public void removeItemAtPosition(int position, String documentID, Date itemDate, int foodSlotID, double totalCal){
+    public void removeItemAtPosition(int position, String documentID, Date itemDate, int foodSlotID, double totalCal, int type){
 
         Instant itemInstant = itemDate.toInstant().truncatedTo(ChronoUnit.DAYS);
         Instant nowInstant = Instant.now().truncatedTo(ChronoUnit.DAYS);
         int slotIndex = 0;
 
 
-        if(nowInstant.compareTo(itemInstant) == 0){
-            slotIndex = foodSlotID;
+        if(nowInstant.compareTo(itemInstant) == 0){ //today
+            slotIndex = type == 1 ? foodSlotID : -1;
         }
 
         mvcModel.removeHistoryItem(new MVCModel.TaskResultStatus() {
@@ -68,7 +68,7 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
                 }else
                     Toast.makeText(historyFragmentView.getRootView().getContext(), "Could not delete without internet", Toast.LENGTH_SHORT).show();
             }
-        }, documentID, slotIndex, totalCal);
+        }, documentID, slotIndex, totalCal, type, itemInstant);
     }
 
     public void editItemAtPosition(int position, String documentID){

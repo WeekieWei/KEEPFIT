@@ -45,7 +45,7 @@ public class UpdateFireBaseWorker extends Worker {
                 status = result;
             }
 
-        });
+        }, false);
 
         try {
             Thread.sleep(4 * 1000);
