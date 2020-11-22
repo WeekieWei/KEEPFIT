@@ -30,4 +30,9 @@
         android:name="com.hoongyan.keepfit.MainActivity.HistoryFragment.HistoryFragment"
         android:label="History"
         tools:layout="@layout/fragment_history" />
+    <fragment
+        android:id="@+id/menuUpdateProfile"
+        android:name="com.hoongyan.keepfit.MainActivity.UpdateProfile.UpdateProfileFragment"
+        android:label="Update Profile"
+        tools:layout="@layout/activity_user_profile"/>
 </navigation>

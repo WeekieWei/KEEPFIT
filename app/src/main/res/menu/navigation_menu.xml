@@ -26,9 +26,9 @@
 
         <menu>
             <item
-                android:id="@+id/menuSettings"
+                android:id="@+id/menuUpdateProfile"
                 android:icon="@mipmap/ic_launcher"
-                android:title="Setting"/>
+                android:title="Update Profile"/>
 
             <item
                 android:id="@+id/menuDebug"

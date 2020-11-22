@@ -6,7 +6,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.hoongyan.keepfit.JavaClass.ExerciseObject;
 import com.hoongyan.keepfit.MVCModel;
+import com.hoongyan.keepfit.MainActivity.ExerciseFragment.ExerciseRecycleViewAdapter;
 import com.hoongyan.keepfit.MainActivity.ExerciseFragment.View.ExerciseFragmentView;
 
 import org.json.JSONArray;
@@ -14,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -30,6 +35,7 @@ public class ExerciseFragmentController implements ExerciseFragmentFragmentContr
 
     //Data Field
     private boolean isExerciseTaskRunning;
+    private ArrayList<ExerciseObject> exerciseList;
     //private Map<Integer, JSONObject> foodMap;
 
 
@@ -126,6 +132,26 @@ public class ExerciseFragmentController implements ExerciseFragmentFragmentContr
             isExerciseTaskRunning = false;
             exerciseFragmentView.notifyNLPProcessFinish();
         }
+    }
+
+    public RecyclerView.Adapter getRecycleViewAdapter(){
+
+        exerciseList = new ArrayList<>();
+        exerciseList.add(new ExerciseObject("Jogging; General", 7.0));
+        exerciseList.add(new ExerciseObject("Rope Skipping; General", 12.3));
+        exerciseList.add(new ExerciseObject("Bicycling; Moderate effort", 8.0));
+        exerciseList.add(new ExerciseObject("Bicycling; Vigorous effort", 14.0));
+        exerciseList.add(new ExerciseObject("Hatha Yoga", 2.5));
+        exerciseList.add(new ExerciseObject("Basketball; General", 6.5));
+        exerciseList.add(new ExerciseObject("Tennis: Singles", 8.0));
+        exerciseList.add(new ExerciseObject("Hiking", 7.3));
+        exerciseList.add(new ExerciseObject("Standing", 1.8));
+
+        return new ExerciseRecycleViewAdapter(exerciseList, mvcModel.getUserWeightFloat());
+    }
+
+    public double getCalVal(double met){
+        return met * 3.5 * mvcModel.getUserWeightFloat() / 200;
     }
 
     @Override

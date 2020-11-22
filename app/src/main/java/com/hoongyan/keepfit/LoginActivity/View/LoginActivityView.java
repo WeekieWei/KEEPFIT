@@ -11,6 +11,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.facebook.login.widget.LoginButton;
 import com.google.android.material.button.MaterialButton;
@@ -33,6 +36,8 @@ public class LoginActivityView implements LoginActivityViewInterface {
     private TextInputLayout emailInputLayout, passwordInputLayout;
     private MaterialButton signUpButton, signInButton, googleLoginButton, facebookLoginButtonDummy;
     private LoginButton facebookLoginButton;
+    private RelativeLayout mainCover;
+    private ConstraintLayout loginLayout;
 
     public LoginActivityView(Activity loginActivity, ViewGroup viewGroup) {
         this.loginActivity = loginActivity;
@@ -57,6 +62,15 @@ public class LoginActivityView implements LoginActivityViewInterface {
         facebookLoginButton = rootView.findViewById(R.id.facebookLoginButton);
         facebookLoginButtonDummy = rootView.findViewById(R.id.facebookLoginButtonDummy);
         googleLoginButton = rootView.findViewById(R.id.googleLoginButton);
+
+        mainCover = rootView.findViewById(R.id.mainCover);
+        loginLayout = rootView.findViewById(R.id.loginLayout);
+    }
+
+    public void removeCover(){
+        mainCover.animate().alpha(0).setDuration(1000).setStartDelay(2000);
+        loginLayout.setVisibility(View.VISIBLE);
+        loginLayout.animate().alpha(1).setDuration(1000).setStartDelay(2000);
     }
 
     @Override

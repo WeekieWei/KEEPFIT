@@ -259,6 +259,8 @@ public class MVCModel {
 
         double target = calRequired + weightAdjust;
 
+        localStorage.edit().putString("firstName", userProfile.getFirstName()).apply();
+        localStorage.edit().putString("lastName", userProfile.getLastName()).apply();
         localStorage.edit().putFloat("calRequired", (float) calRequired).apply();
         localStorage.edit().putFloat("weightAdjust", (float) weightAdjust).apply();
         localStorage.edit().putFloat("bmi", (float) userProfile.getBmi()).apply();
@@ -460,7 +462,9 @@ public class MVCModel {
                 && localStorage.contains("height")
                 && localStorage.contains("gender")
                 && localStorage.contains("dob")
-                && localStorage.contains("activityLevel");
+                && localStorage.contains("activityLevel")
+                && localStorage.contains("firstName")
+                && localStorage.contains("lastName");
     }
 
     public UserHomePageData getUserHomePageData(){
@@ -1016,6 +1020,8 @@ public class MVCModel {
         return String.valueOf(localStorage.getFloat("weight", 0f));
     }
 
+    public float getUserWeightFloat() {return  localStorage.getFloat("weight", 0f);}
+
     public String getUserHeight(){
         return String.valueOf(localStorage.getFloat("height", 0f));
     }
@@ -1121,6 +1127,23 @@ public class MVCModel {
                 status.onResultReturn(task.isSuccessful());
             }
         });
+    }
+
+    //Update Profile
+
+    public UserProfile getCurrentUserProfileFromLocalStorage(){
+        String firstName = localStorage.getString("firstName", "");
+        String lastName = localStorage.getString("lastName", "");
+        float calRequired = localStorage.getFloat("calRequired", 0f);
+        float weight = localStorage.getFloat("weight", 0f);
+        float height = localStorage.getFloat("height", 0f);
+        String gender = localStorage.getString("gender", "");
+        String dob = localStorage.getString("dob", "DD/MM/YYYY");
+        int activityLevel = localStorage.getInt("activityLevel", -1);
+        float weightAdjust = localStorage.getFloat("weightAdjust", 0f);
+        float bmi = localStorage.getFloat("bmi", 0f);
+
+        return new UserProfile(firstName, lastName, gender, dob, (double) weight, (double) height, (double) calRequired, (double) bmi, (int) weightAdjust, activityLevel);
     }
 
     private boolean isOnline() {

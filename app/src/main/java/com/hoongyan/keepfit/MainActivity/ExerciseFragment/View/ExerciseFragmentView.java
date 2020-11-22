@@ -3,8 +3,11 @@ package com.hoongyan.keepfit.MainActivity.ExerciseFragment.View;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.speech.RecognizerIntent;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,8 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hoongyan.keepfit.MainActivity.ExerciseFragment.Controller.ExerciseFragmentController;
 import com.hoongyan.keepfit.R;
@@ -45,8 +51,13 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
     LinearLayout nlpLinearLayout, exerciseInputLinearLayout;
     EditText exerciseInputEditText;
     ImageButton voiceButton, proceedButton, clearButton;
-    Button submitButton;
-    TextView loadingTextView;
+    Button submitButton, getMETListButton;
+    TextView loadingTextView, metValText, customCalVal, nlpCardTitle;
+
+    CardView exerciseMETCard;
+
+    RecyclerView exerciseRecycleView;
+
 
     public ExerciseFragmentView(Fragment fragment){
         this.fragment = fragment;
@@ -69,6 +80,7 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
     @Override
     public void nlpLayoutHide() {
         nlpLinearLayout.setVisibility(View.GONE);
+        exerciseMETCard.setVisibility(View.GONE);
         loadingTextView.setVisibility(View.VISIBLE);
         exerciseInputLinearLayout.setVisibility(View.VISIBLE);
         submitButton.setVisibility(View.GONE);
@@ -77,6 +89,7 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
     @Override
     public void nlpLayoutReveal() {
         nlpLinearLayout.setVisibility(View.VISIBLE);
+        exerciseMETCard.setVisibility(View.VISIBLE);
         exerciseInputEditText.setText("");
         exerciseInputLinearLayout.setVisibility(View.GONE);
     }
@@ -249,8 +262,12 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
     public void initializeViews() {
         loadingTextView = rootView.findViewById(R.id.loadingTextView);
         nlpLinearLayout = rootView.findViewById(R.id.nlpLinearLayout);
+        nlpCardTitle = rootView.findViewById(R.id.nlpCardTitle);
+        nlpCardTitle.setText("Calorie Burned");
         exerciseInputLinearLayout = rootView.findViewById(R.id.foodInputLinearLayout);
-        exerciseInputEditText = rootView.findViewById(R.id.foodInputEditText);
+        exerciseMETCard = rootView.findViewById(R.id.exerciseMETCard);
+        exerciseMETCard.setVisibility(View.VISIBLE);
+        exerciseInputEditText = rootView.findViewById(R.id.nlpCardInputEditText);
         exerciseInputEditText.setHint("Tell us what exercise you have done:\n\nExample: I jogged for 30 minutes, and walked for 10 minutes");
         clearButton = rootView.findViewById(R.id.clearButton);
         clearButton.setOnTouchListener(new View.OnTouchListener() {
@@ -390,6 +407,48 @@ public class ExerciseFragmentView implements ExerciseFragmentViewInterface{
                 exerciseFragmentController.addMealToFirebase(exerciseName, totalCal);
             }
         });
+
+        exerciseRecycleView = rootView.findViewById(R.id.exerciseRecycleView);
+        exerciseRecycleView.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
+        exerciseRecycleView.setAdapter(exerciseFragmentController.getRecycleViewAdapter());
+
+        metValText = rootView.findViewById(R.id.customMETVal);
+        customCalVal = rootView.findViewById(R.id.customCalVal);
+        getMETListButton = rootView.findViewById(R.id.getMETListButton);
+
+        metValText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!metValText.getText().toString().isEmpty() || metValText.getText().toString().equals(".")){
+                    getMETListButton.setVisibility(View.GONE);
+                    double metVal = Double.parseDouble(metValText.getText().toString());
+                    customCalVal.setText(String.format("%.2f",exerciseFragmentController.getCalVal(metVal)) + " cal/min");
+                }else{
+                    customCalVal.setText("");
+                    getMETListButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        getMETListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment.getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://golf.procon.org/met-values-for-800-activities/")));
+            }
+        });
+
+
     }
 
     private float distance(float x1, float y1, float x2, float y2) {

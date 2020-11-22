@@ -92,8 +92,11 @@ public class LoginActivityController implements LoginActivityControllerInterface
                     loginActivityView.navigateToNewActivity(result);
                 }
             });
+        }else{
+            loginActivityView.removeCover();
         }
     }
+
 
     @Override
     public void initializeFacebookSDK() {

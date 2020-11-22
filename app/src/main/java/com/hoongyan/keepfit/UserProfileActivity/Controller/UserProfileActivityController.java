@@ -39,16 +39,16 @@ public class UserProfileActivityController implements UserProfileActivityControl
 
     @Override
     public void buttonGroupClickHandler(int genderCheckedId, int fatPercentageCheckedId) {
-        int visibilityType = 0;
-
-        if(fatPercentageCheckedId == R.id.directFatInputButton)
-            visibilityType = 1;
-        else if(genderCheckedId == R.id.maleButton && fatPercentageCheckedId == R.id.indirectFatInputButton)
-            visibilityType = 2;
-        else if(genderCheckedId == R.id.femaleButton && fatPercentageCheckedId == R.id.indirectFatInputButton)
-            visibilityType = 3;
-
-        userProfileActivityView.adaptViewsVisibility(visibilityType);
+//        int visibilityType = 0;
+//
+//        if(fatPercentageCheckedId == R.id.directFatInputButton)
+//            visibilityType = 1;
+//        else if(genderCheckedId == R.id.maleButton && fatPercentageCheckedId == R.id.indirectFatInputButton)
+//            visibilityType = 2;
+//        else if(genderCheckedId == R.id.femaleButton && fatPercentageCheckedId == R.id.indirectFatInputButton)
+//            visibilityType = 3;
+//
+//        userProfileActivityView.adaptViewsVisibility(visibilityType);
     }
 
     @Override
@@ -139,60 +139,60 @@ public class UserProfileActivityController implements UserProfileActivityControl
         }
 
         //Fat Percentage (RAW)
-        if(container.getId() == R.id.fatPercentageContainer){
-            String data = container.getEditText().getText().toString();
-
-            if(!data.isEmpty()) {
-                double value = Double.parseDouble(data);
-                if (value < 0 || value > 60) {
-                    container.setError("Illogical Fat Percentage Value");
-                    result = false;
-                }else
-                    container.setErrorEnabled(false);
-            }
-        }
+//        if(container.getId() == R.id.fatPercentageContainer){
+//            String data = container.getEditText().getText().toString();
+//
+//            if(!data.isEmpty()) {
+//                double value = Double.parseDouble(data);
+//                if (value < 0 || value > 60) {
+//                    container.setError("Illogical Fat Percentage Value");
+//                    result = false;
+//                }else
+//                    container.setErrorEnabled(false);
+//            }
+//        }
 
         //Waist
-        if(container.getId() == R.id.waistContainer){
-            String data = container.getEditText().getText().toString();
-
-            if(!data.isEmpty()) {
-                double value = Double.parseDouble(data);
-                if (value < 20 || value > 150) {
-                    container.setError("Illogical Waist Circumference Value");
-                    result = false;
-                }else
-                    container.setErrorEnabled(false);
-            }
-        }
+//        if(container.getId() == R.id.waistContainer){
+//            String data = container.getEditText().getText().toString();
+//
+//            if(!data.isEmpty()) {
+//                double value = Double.parseDouble(data);
+//                if (value < 20 || value > 150) {
+//                    container.setError("Illogical Waist Circumference Value");
+//                    result = false;
+//                }else
+//                    container.setErrorEnabled(false);
+//            }
+//        }
 
         //Neck
-        if(container.getId() == R.id.neckContainer){
-            String data = container.getEditText().getText().toString();
-
-            if(!data.isEmpty()) {
-                double value = Double.parseDouble(data);
-                if (value < 20 || value > 60) {
-                    container.setError("Illogical Neck Circumference Value");
-                    result = false;
-                }else
-                    container.setErrorEnabled(false);
-            }
-        }
+//        if(container.getId() == R.id.neckContainer){
+//            String data = container.getEditText().getText().toString();
+//
+//            if(!data.isEmpty()) {
+//                double value = Double.parseDouble(data);
+//                if (value < 20 || value > 60) {
+//                    container.setError("Illogical Neck Circumference Value");
+//                    result = false;
+//                }else
+//                    container.setErrorEnabled(false);
+//            }
+//        }
 
         //Hip
-        if(container.getId() == R.id.hipContainer){
-            String data = container.getEditText().getText().toString();
-
-            if(!data.isEmpty()) {
-                double value = Double.parseDouble(data);
-                if (value < 20 || value > 150) {
-                    container.setError("Illogical Hip Circumference Value");
-                    result = false;
-                }else
-                    container.setErrorEnabled(false);
-            }
-        }
+//        if(container.getId() == R.id.hipContainer){
+//            String data = container.getEditText().getText().toString();
+//
+//            if(!data.isEmpty()) {
+//                double value = Double.parseDouble(data);
+//                if (value < 20 || value > 150) {
+//                    container.setError("Illogical Hip Circumference Value");
+//                    result = false;
+//                }else
+//                    container.setErrorEnabled(false);
+//            }
+//        }
         return result;
 
 
@@ -215,6 +215,79 @@ public class UserProfileActivityController implements UserProfileActivityControl
             }
         }
         return true;
+    }
+
+    public void registerUserProfile(int gender, String firstName, String lastName, String dob, double weight,
+                                    double height, int activityLevel){
+        double calRequired;
+
+        //Age
+        LocalDate localDate = LocalDate.parse(dob, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        int age = Period.between(localDate, LocalDate.now()).getYears();
+
+
+        //Daily Calorie Required calculation
+        //Reference: https://www.calculator.net/calorie-calculator.html
+
+        if(gender == 1){
+            //Mifflin-St Jeor Equation
+            calRequired = 10 * weight + 6.25 * height - 5 * age + 5;
+        }else if(gender == 2){
+            calRequired = 10 * weight + 6.25 * height - 5 * age - 161;
+        }else{
+            calRequired = 0;
+        }
+
+        switch(activityLevel){
+            case 1 : calRequired *= 1.2;
+                break;
+            case 2 : calRequired *= 1.375;
+                break;
+            case 3 : calRequired *= 1.55;
+                break;
+            case 4 : calRequired *= 1.725;
+                break;
+            case 5 : calRequired *= 1.9;
+                break;
+        }
+
+        double bmi = weight / height / height * 10000;
+
+        int weightAdjust;
+        if(bmi < 18.5){ //Gain Weight Constant
+            weightAdjust = 500;
+        }else if(bmi > 25){ //Lose Weight Constant
+            weightAdjust = -500;
+        }else{ //Maintain Weight;
+            weightAdjust = 0;
+        }
+
+        String genderStr;
+        if(gender == 1)
+            genderStr = "Male";
+        else
+            genderStr = "Female";
+
+        UserProfile userProfile = new UserProfile(firstName, lastName, genderStr, dob, weight, height, calRequired, bmi, weightAdjust, activityLevel);
+        mvcModel.createUserProfile(new MVCModel.TaskResultStatus() {
+            @Override
+            public void onResultReturn(boolean result) {
+                if(result){
+                    mvcModel.isUserProfileCreated(new MVCModel.TaskResultStatus() {
+                        @Override
+                        public void onResultReturn(boolean result) {
+                            if(result){
+                                Toast.makeText(userProfileActivityView.getRootView().getContext(),
+                                        "Profile Successfully Created", Toast.LENGTH_SHORT).show();
+                                userProfileActivityView.generateAlertDialog(bmi, weightAdjust);
+                                mvcModel.saveUserProfileToLocalStorage(userProfile);
+                            }
+                        }
+                    });
+                }
+            }
+        }, userProfile);
+
     }
 
     @Override
@@ -286,24 +359,24 @@ public class UserProfileActivityController implements UserProfileActivityControl
         else
             genderStr = "Female";
 
-        UserProfile userProfile = new UserProfile(firstName, lastName, genderStr, dob, weight, height, fat, calRequired, bmi, weightAdjust, activityLevel);
-        mvcModel.createUserProfile(new MVCModel.TaskResultStatus() {
-            @Override
-            public void onResultReturn(boolean result) {
-                if(result){
-                    mvcModel.isUserProfileCreated(new MVCModel.TaskResultStatus() {
-                        @Override
-                        public void onResultReturn(boolean result) {
-                            if(result){
-                                Toast.makeText(userProfileActivityView.getRootView().getContext(),
-                                        "Profile Successfully Created", Toast.LENGTH_SHORT).show();
-                                userProfileActivityView.generateAlertDialog(bmi, weightAdjust);
-                                mvcModel.saveUserProfileToLocalStorage(userProfile);
-                            }
-                        }
-                    });
-                }
-            }
-        }, userProfile);
+//        UserProfile userProfile = new UserProfile(firstName, lastName, genderStr, dob, weight, height, fat, calRequired, bmi, weightAdjust, activityLevel);
+//        mvcModel.createUserProfile(new MVCModel.TaskResultStatus() {
+//            @Override
+//            public void onResultReturn(boolean result) {
+//                if(result){
+//                    mvcModel.isUserProfileCreated(new MVCModel.TaskResultStatus() {
+//                        @Override
+//                        public void onResultReturn(boolean result) {
+//                            if(result){
+//                                Toast.makeText(userProfileActivityView.getRootView().getContext(),
+//                                        "Profile Successfully Created", Toast.LENGTH_SHORT).show();
+//                                userProfileActivityView.generateAlertDialog(bmi, weightAdjust);
+//                                mvcModel.saveUserProfileToLocalStorage(userProfile);
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }, userProfile);
     }
 }

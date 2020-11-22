@@ -1,8 +1,6 @@
 package com.hoongyan.keepfit.MainActivity.FoodFragment.View;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.speech.RecognizerIntent;
@@ -20,13 +18,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -295,7 +291,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
         cardView = rootView.findViewById(R.id.nlpCardView);
         nlpLinearLayout = rootView.findViewById(R.id.nlpLinearLayout);
         foodInputLinearLayout = rootView.findViewById(R.id.foodInputLinearLayout);
-        foodInputEditText = rootView.findViewById(R.id.foodInputEditText);
+        foodInputEditText = rootView.findViewById(R.id.nlpCardInputEditText);
         clearButton = rootView.findViewById(R.id.clearButton);
         clearButton.setOnTouchListener(new View.OnTouchListener() {
             private float pressedX = 0;

@@ -9,6 +9,7 @@
     tools:context=".UserProfileActivity.UserProfileActivity">
 
     <TextView
+        android:id="@+id/profileMainTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Create A New Profile"
@@ -210,121 +211,121 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fat Percentage (Choose one):"
-                android:textSize="16sp" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Fat Percentage (Choose one):"-->
+<!--                android:textSize="16sp" />-->
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/fatPercentageButtonGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:checkedButton="@+id/directFatInputButton"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+<!--            <com.google.android.material.button.MaterialButtonToggleGroup-->
+<!--                android:id="@+id/fatPercentageButtonGroup"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:checkedButton="@+id/directFatInputButton"-->
+<!--                app:selectionRequired="true"-->
+<!--                app:singleSelection="true">-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/directFatInputButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="raw input" />
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/directFatInputButton"-->
+<!--                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="raw input" />-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/indirectFatInputButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="estimation input " />
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/indirectFatInputButton"-->
+<!--                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="estimation input " />-->
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+<!--            </com.google.android.material.button.MaterialButtonToggleGroup>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fatPercentageContainer"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:hint="Fat Percentage (%)"
-                app:boxStrokeErrorColor="@color/colorRed"
-                app:errorIconTint="@color/colorRed"
-                app:errorTextColor="@color/colorRed"
-                app:startIconDrawable="@drawable/ic_measuring_tape">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/fatPercentageContainer"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:hint="Fat Percentage (%)"-->
+<!--                app:boxStrokeErrorColor="@color/colorRed"-->
+<!--                app:errorIconTint="@color/colorRed"-->
+<!--                app:errorTextColor="@color/colorRed"-->
+<!--                app:startIconDrawable="@drawable/ic_measuring_tape">-->
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/fatPercentageEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1" />
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/fatPercentageEditText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:maxLines="1" />-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/waistContainer"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:hint="Waist Circumference (cm)"
-                app:boxStrokeErrorColor="@color/colorRed"
-                app:errorIconTint="@color/colorRed"
-                app:errorTextColor="@color/colorRed"
-                app:startIconDrawable="@drawable/ic_measuring_tape">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/waistContainer"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:hint="Waist Circumference (cm)"-->
+<!--                app:boxStrokeErrorColor="@color/colorRed"-->
+<!--                app:errorIconTint="@color/colorRed"-->
+<!--                app:errorTextColor="@color/colorRed"-->
+<!--                app:startIconDrawable="@drawable/ic_measuring_tape">-->
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/waistEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1" />
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/waistEditText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:maxLines="1" />-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/neckContainer"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:hint="Neck Circumference (cm)"
-                app:boxStrokeErrorColor="@color/colorRed"
-                app:errorIconTint="@color/colorRed"
-                app:errorTextColor="@color/colorRed"
-                app:startIconDrawable="@drawable/ic_measuring_tape">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/neckContainer"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:hint="Neck Circumference (cm)"-->
+<!--                app:boxStrokeErrorColor="@color/colorRed"-->
+<!--                app:errorIconTint="@color/colorRed"-->
+<!--                app:errorTextColor="@color/colorRed"-->
+<!--                app:startIconDrawable="@drawable/ic_measuring_tape">-->
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/neckEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1" />
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/neckEditText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:maxLines="1" />-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/hipContainer"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:hint="Hip Circumference (cm)"
-                app:boxStrokeErrorColor="@color/colorRed"
-                app:errorIconTint="@color/colorRed"
-                app:errorTextColor="@color/colorRed"
-                app:startIconDrawable="@drawable/ic_measuring_tape">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/hipContainer"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="4dp"-->
+<!--                android:hint="Hip Circumference (cm)"-->
+<!--                app:boxStrokeErrorColor="@color/colorRed"-->
+<!--                app:errorIconTint="@color/colorRed"-->
+<!--                app:errorTextColor="@color/colorRed"-->
+<!--                app:startIconDrawable="@drawable/ic_measuring_tape">-->
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/hipEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:maxLines="1" />
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/hipEditText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:inputType="numberDecimal"-->
+<!--                    android:maxLines="1" />-->
 
-            </com.google.android.material.textfield.TextInputLayout>
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <TextView
                 android:layout_width="wrap_content"

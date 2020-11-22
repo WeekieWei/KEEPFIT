@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hoongyan.keepfit.JavaClass.UserProfile;
 import com.hoongyan.keepfit.MainActivity.MainActivity;
 import com.hoongyan.keepfit.R;
 import com.hoongyan.keepfit.UserProfileActivity.Controller.UserProfileActivityController;
@@ -78,40 +79,33 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
         dobContainer = rootView.findViewById(R.id.dobContainer);
         weightContainer = rootView.findViewById(R.id.weightContainer);
         heightContainer = rootView.findViewById(R.id.heightContainer);
-        fatPercentageContainer = rootView.findViewById(R.id.fatPercentageContainer);
-        waistContainer = rootView.findViewById(R.id.waistContainer);
-        neckContainer = rootView.findViewById(R.id.neckContainer);
-        hipContainer = rootView.findViewById(R.id.hipContainer);
         activityLevelContainer = rootView.findViewById(R.id.activityLevelContainer);
         activityLevelSelection = rootView.findViewById(R.id.activityLevelSelection);
         activityLevelSelection.setAdapter(activityLevelOptionsAdapter);
 
         genderButtonGroup = rootView.findViewById(R.id.genderButtonGroup);
-        fatPercentageButtonGroup = rootView.findViewById(R.id.fatPercentageButtonGroup);
 
         createProfileButton = rootView.findViewById(R.id.createProfileButton);
 
-        waistContainer.setVisibility(View.GONE);
-        neckContainer.setVisibility(View.GONE);
-        hipContainer.setVisibility(View.GONE);
+
     }
 
     @Override
     public void attachListenersToButtonGroups() {
 
-        genderButtonGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
-            @Override
-            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
-                userProfileActivityController.buttonGroupClickHandler(genderButtonGroup.getCheckedButtonId(), fatPercentageButtonGroup.getCheckedButtonId());
-            }
-        });
+//        genderButtonGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+//            @Override
+//            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+//                userProfileActivityController.buttonGroupClickHandler(genderButtonGroup.getCheckedButtonId(), fatPercentageButtonGroup.getCheckedButtonId());
+//            }
+//        });
 
-        fatPercentageButtonGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
-            @Override
-            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
-                userProfileActivityController.buttonGroupClickHandler(genderButtonGroup.getCheckedButtonId(), fatPercentageButtonGroup.getCheckedButtonId());
-            }
-        });
+//        fatPercentageButtonGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+//            @Override
+//            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+//                userProfileActivityController.buttonGroupClickHandler(genderButtonGroup.getCheckedButtonId(), fatPercentageButtonGroup.getCheckedButtonId());
+//            }
+//        });
 
 
         dobContainer.getEditText().setOnClickListener(new View.OnClickListener() {
@@ -157,20 +151,20 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
 
                 gender = genderButtonGroup.getCheckedButtonId() == R.id.maleButton ? 1 : 2;
 
-                if(fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
-                    if (!userProfileActivityController.validateField(fatPercentageContainer))
-                        validateResult = false;
-                }
-                else if(genderButtonGroup.getCheckedButtonId() == R.id.maleButton) {
-                    if (!userProfileActivityController.validateField(waistContainer)
-                            | !userProfileActivityController.validateField(neckContainer))
-                        validateResult = false;
-                }else if(genderButtonGroup.getCheckedButtonId() == R.id.femaleButton) {
-                    if (!(userProfileActivityController.validateField(waistContainer)
-                            & userProfileActivityController.validateField(neckContainer)
-                            & userProfileActivityController.validateField(hipContainer)))
-                        validateResult = false;
-                }
+//                if(fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
+//                    if (!userProfileActivityController.validateField(fatPercentageContainer))
+//                        validateResult = false;
+//                }
+//                else if(genderButtonGroup.getCheckedButtonId() == R.id.maleButton) {
+//                    if (!userProfileActivityController.validateField(waistContainer)
+//                            | !userProfileActivityController.validateField(neckContainer))
+//                        validateResult = false;
+//                }else if(genderButtonGroup.getCheckedButtonId() == R.id.femaleButton) {
+//                    if (!(userProfileActivityController.validateField(waistContainer)
+//                            & userProfileActivityController.validateField(neckContainer)
+//                            & userProfileActivityController.validateField(hipContainer)))
+//                        validateResult = false;
+//                }
 
                 //
                 if(validateResult) {
@@ -185,22 +179,25 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
                     height = Double.parseDouble(heightContainer.getEditText().getText().toString());
                     activityLevel = activityLevelMap.get(activityLevelSelection.getText().toString());
 
-                    if (fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
-                        fat = Double.parseDouble(fatPercentageContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
-                                height, fat, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, activityLevel);
-                    } else if (genderButtonGroup.getCheckedButtonId() == R.id.maleButton) {
-                        waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
-                        neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
-                                height, Double.NEGATIVE_INFINITY, waist, neck, Double.NEGATIVE_INFINITY, activityLevel);
-                    } else if (genderButtonGroup.getCheckedButtonId() == R.id.femaleButton) {
-                        waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
-                        neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
-                        hip = Double.parseDouble(hipContainer.getEditText().getText().toString());
-                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
-                                height, Double.NEGATIVE_INFINITY, waist, neck, hip, activityLevel);
-                    }
+                    userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
+                                height, activityLevel);
+
+//                    if (fatPercentageButtonGroup.getCheckedButtonId() == R.id.directFatInputButton) {
+//                        fat = Double.parseDouble(fatPercentageContainer.getEditText().getText().toString());
+//                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
+//                                height, fat, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, activityLevel);
+//                    } else if (genderButtonGroup.getCheckedButtonId() == R.id.maleButton) {
+//                        waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
+//                        neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
+//                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
+//                                height, Double.NEGATIVE_INFINITY, waist, neck, Double.NEGATIVE_INFINITY, activityLevel);
+//                    } else if (genderButtonGroup.getCheckedButtonId() == R.id.femaleButton) {
+//                        waist = Double.parseDouble(waistContainer.getEditText().getText().toString());
+//                        neck = Double.parseDouble(neckContainer.getEditText().getText().toString());
+//                        hip = Double.parseDouble(hipContainer.getEditText().getText().toString());
+//                        userProfileActivityController.registerUserProfile(gender, firstName, lastName, dob, weight,
+//                                height, Double.NEGATIVE_INFINITY, waist, neck, hip, activityLevel);
+//                    }
                 }
             }
         });

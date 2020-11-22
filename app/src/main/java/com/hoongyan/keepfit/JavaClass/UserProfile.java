@@ -2,19 +2,19 @@ package com.hoongyan.keepfit.JavaClass;
 
 public class UserProfile {
     private String firstName, lastName, gender, dob;
-    private double weight, height, fat, calRequired, bmi;
+    private double weight, height, calRequired, bmi;
     private int activityLevel, weightAdjust;
 
     public UserProfile(){};
 
-    public UserProfile(String firstName, String lastName, String gender, String dob, double weight, double height, double fat, double calRequired, double bmi, int weightAdjust, int activityLevel) {
+    public UserProfile(String firstName, String lastName, String gender, String dob, double weight, double height, double calRequired, double bmi, int weightAdjust, int activityLevel) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.dob = dob;
         this.weight = weight;
         this.height = height;
-        this.fat = fat;
+//        this.fat = fat;
         this.calRequired = calRequired;
         this.bmi = bmi;
         this.weightAdjust = weightAdjust;
@@ -45,9 +45,9 @@ public class UserProfile {
         return height;
     }
 
-    public double getFat() {
-        return fat;
-    }
+//    public double getFat() {
+//        return fat;
+//    }
 
     public double getCalRequired() {
         return calRequired;
