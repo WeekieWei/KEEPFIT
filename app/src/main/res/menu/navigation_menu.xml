@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/menuHome"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/home_icon"
         android:title="Home"/>
 
     <item
         android:id="@+id/menuFood"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/food_icon"
         android:title="Food"/>
 
     <item
         android:id="@+id/menuExercise"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/exercise_icon"
         android:title="Exercise"/>
 
     <item
         android:id="@+id/menuHistory"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/history_icon"
         android:title="History"/>
 
 
@@ -27,12 +27,12 @@
         <menu>
             <item
                 android:id="@+id/menuUpdateProfile"
-                android:icon="@mipmap/ic_launcher"
+                android:icon="@drawable/update_profile_icon"
                 android:title="Update Profile"/>
 
             <item
                 android:id="@+id/menuDebug"
-                android:icon="@mipmap/ic_launcher"
+                android:icon="@drawable/debug_icon"
                 android:title="Debug Screen"/>
 
         </menu>

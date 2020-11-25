@@ -131,7 +131,7 @@ public class StepTrackingWorker extends Worker implements SensorEventListener {
                 .setContentTitle(NOTIFICATION_TITLE + " " + currentSteps)
                 .setTicker(NOTIFICATION_TITLE + " " + currentSteps)
                // .setContentText("Yesterday Steps: " + yesterdaySteps)
-                .setSmallIcon(R.drawable.ic_work_steps)
+                .setSmallIcon(R.drawable.steps_icon)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setShowWhen(false)

@@ -359,7 +359,8 @@
                 android:layout_gravity="end"
                 android:layout_marginVertical="15dp"
                 android:layout_marginEnd="10dp"
-                app:icon="@drawable/ic_baseline_email_24"
+                app:icon="@drawable/update_profile_icon"
+                app:iconSize="24dp"
                 app:cornerRadius="50dp"/>
         </LinearLayout>
 
