@@ -32,12 +32,14 @@ public class HistoryFragmentView implements HistoryFragmentViewInterface{
         activity = fragment.getActivity();
     }
 
+    @Override
     public View inflateFragmentLayout(LayoutInflater inflater, ViewGroup container){
         rootView = inflater.inflate(R.layout.fragment_history, container, false);
         initializeViews();
         return rootView;
     }
 
+    @Override
     public void setMVCController(HistoryFragmentController mvcController){
         historyFragmentController = mvcController;
     }
@@ -50,10 +52,12 @@ public class HistoryFragmentView implements HistoryFragmentViewInterface{
         historyRecyclerView.setAdapter(null);
     }
 
+    @Override
     public void setRecycleViewAdapter(RecyclerView.Adapter adapter){
         historyRecyclerView.setAdapter(adapter);
     }
 
+    @Override
     public View getAlertDialogLayout(){
         return LayoutInflater.from(fragment.getContext()).inflate(R.layout.layout_input_meal_name, (ViewGroup) fragment.getView(), false);
     }

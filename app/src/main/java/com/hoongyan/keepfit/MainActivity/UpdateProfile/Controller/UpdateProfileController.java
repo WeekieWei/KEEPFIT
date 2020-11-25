@@ -11,7 +11,6 @@ import com.hoongyan.keepfit.JavaClass.UserProfile;
 import com.hoongyan.keepfit.MVCModel;
 import com.hoongyan.keepfit.MainActivity.UpdateProfile.View.UpdateProfileView;
 import com.hoongyan.keepfit.R;
-import com.hoongyan.keepfit.UserProfileActivity.Controller.UserProfileActivityController;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -32,6 +31,7 @@ public class UpdateProfileController implements UpdateProfileControllerInterface
         mvcModel = new MVCModel(context, true);
     }
 
+    @Override
     public DatePickerDialog.OnDateSetListener setDateChangeListener(final UpdateProfileController.DateChangeListener dateChangeListener){
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -54,6 +54,7 @@ public class UpdateProfileController implements UpdateProfileControllerInterface
         return dateSetListener;
     }
 
+    @Override
     public boolean validateField(TextInputLayout container) {
 
         boolean result = true;
@@ -119,6 +120,7 @@ public class UpdateProfileController implements UpdateProfileControllerInterface
         return result;
     }
 
+    @Override
     public boolean validateWH(TextInputLayout weightContainer, TextInputLayout heightContainer){
         String weight = weightContainer.getEditText().getText().toString();
         String height = heightContainer.getEditText().getText().toString();
@@ -138,6 +140,7 @@ public class UpdateProfileController implements UpdateProfileControllerInterface
         return true;
     }
 
+    @Override
     public void updateUserProfile(int gender, String firstName, String lastName, String dob, double weight,
                                     double height, int activityLevel){
         double calRequired;
@@ -211,6 +214,7 @@ public class UpdateProfileController implements UpdateProfileControllerInterface
 
     }
 
+    @Override
     public UserProfile getCurrentData(){
         return mvcModel.getCurrentUserProfileFromLocalStorage();
     }

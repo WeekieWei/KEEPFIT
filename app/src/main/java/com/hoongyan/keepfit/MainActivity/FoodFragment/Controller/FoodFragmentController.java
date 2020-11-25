@@ -1,21 +1,9 @@
 package com.hoongyan.keepfit.MainActivity.FoodFragment.Controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hoongyan.keepfit.MVCModel;
 import com.hoongyan.keepfit.MainActivity.FoodFragment.View.FoodFragmentView;
@@ -31,9 +19,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FoodFragmentController implements FoodFragmentControllerInterface{
 
@@ -178,6 +163,7 @@ public class FoodFragmentController implements FoodFragmentControllerInterface{
         }, mealName, totalCal, slot);
     }
 
+    @Override
     public void requestUpdateCalSlots(){
         int selectSlotIndex;
         int hourNow = LocalTime.now().getHour();

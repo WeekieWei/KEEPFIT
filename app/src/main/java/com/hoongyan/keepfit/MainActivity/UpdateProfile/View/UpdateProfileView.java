@@ -21,7 +21,6 @@ import com.hoongyan.keepfit.MainActivity.MainActivity;
 import com.hoongyan.keepfit.MainActivity.UpdateProfile.Controller.UpdateProfileController;
 import com.hoongyan.keepfit.MainActivity.UpdateProfile.UpdateProfileFragment;
 import com.hoongyan.keepfit.R;
-import com.hoongyan.keepfit.UserProfileActivity.Controller.UserProfileActivityController;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -68,12 +67,14 @@ public class UpdateProfileView implements UpdateProfileViewInterface{
         activityLevelOptionsAdapter = new ArrayAdapter<>(fragment.getContext(), R.layout.support_simple_spinner_dropdown_item, activityLevelOptions);
     }
 
+    @Override
     public View inflateFragmentLayout(LayoutInflater inflater, ViewGroup container){
         rootView = inflater.inflate(R.layout.activity_user_profile, container, false);
         initializeViews();
         return rootView;
     }
 
+    @Override
     public void setMVCController(UpdateProfileController controller){
         updateProfileController = controller;
     }
@@ -189,6 +190,7 @@ public class UpdateProfileView implements UpdateProfileViewInterface{
 
     }
 
+    @Override
     public void generateAlertDialog(double bmi, int weightAdjust) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(rootView.getContext()).create();

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.hoongyan.keepfit.MVCView;
 import com.hoongyan.keepfit.MainActivity.ExerciseFragment.Controller.ExerciseFragmentController;
-import com.hoongyan.keepfit.MainActivity.FoodFragment.Controller.FoodFragmentController;
 
 import org.json.JSONException;
 import org.json.JSONObject;

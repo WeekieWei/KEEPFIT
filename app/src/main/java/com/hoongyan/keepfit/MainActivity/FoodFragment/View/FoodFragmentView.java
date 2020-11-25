@@ -548,6 +548,7 @@ public class FoodFragmentView implements FoodFragmentViewInterface{
         foodFragmentController.requestUpdateCalSlots();
     }
 
+    @Override
     public void updateCalSlotsData(CalorieSlotDataObject object, int selectedSlotIndex){
         float slot1Suggested = object.getSlot1Suggested();
         float slot2Suggested = object.getSlot2Suggested();

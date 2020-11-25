@@ -65,12 +65,14 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         handler = new Handler();
     }
 
+    @Override
     public View inflateFragmentLayout(LayoutInflater inflater, ViewGroup container){
         rootView = inflater.inflate(R.layout.fragment_home, container, false);
         initializeViews();
         return rootView;
     }
 
+    @Override
     public void setMVCController(HomeFragmentController controller){
         homeFragmentController = controller;
     }
@@ -146,6 +148,7 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
 
     }
 
+    @Override
     public void notifyUpdateWeightSuccess(float bmi, float weightAdjust){
 
         AlertDialog alertDialog = new AlertDialog.Builder(rootView.getContext()).create();
@@ -168,10 +171,12 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         alertDialog.show();
     }
 
+    @Override
     public void onPause(){
         handler.removeCallbacks(runnable);
     }
 
+    @Override
     public void onResume(){
         handler.postDelayed(runnable = new Runnable() {
             @Override
@@ -182,6 +187,7 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         }, 1000);
     }
 
+    @Override
     public void bindDataToViews(UserHomePageData data){
         fragment.getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -198,6 +204,7 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         });
     }
 
+    @Override
     public void bindDataToCard3Chart(BarData barData, ArrayList<String> xAxisLabel, float avgNet, boolean isNotEmpty){
         try {
             fragment.getActivity().runOnUiThread(new Runnable() {
@@ -236,6 +243,7 @@ public class HomeFragmentView implements HomeFragmentViewInterface {
         }
     }
 
+    @Override
     public void bindDataToCard4Chart(CombinedData combinedData, ArrayList<String> xAxisLabel, float weight, boolean isNotEmpty){
         try {
 

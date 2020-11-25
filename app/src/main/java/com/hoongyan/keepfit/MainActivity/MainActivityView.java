@@ -35,6 +35,7 @@ public class MainActivityView implements MainActivityViewInterface {
         rootView = LayoutInflater.from(mainActivity).inflate(R.layout.activity_main, viewGroup);
     }
 
+    @Override
     public void setController(MainActivityController mainActivityController){
         this.mainActivityController = mainActivityController;
     }
@@ -60,10 +61,12 @@ public class MainActivityView implements MainActivityViewInterface {
         return rootView;
     }
 
+    @Override
     public TextView getTextTitle(){
         return textTitle;
     }
 
+    @Override
     public void setupActionBarWithNavController(){
         NavigationUI.setupWithNavController(navigationView, mainActivityController.getNavController());
     }

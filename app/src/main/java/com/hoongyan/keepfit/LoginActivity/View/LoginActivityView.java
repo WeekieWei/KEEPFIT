@@ -43,11 +43,13 @@ public class LoginActivityView implements LoginActivityViewInterface {
         this.loginActivity = loginActivity;
     }
 
+    @Override
     public void setController(LoginActivityController controller){
         this.loginActivityController = controller;
         inflateLayout(null);
     }
 
+    @Override
     public void inflateLayout(ViewGroup viewGroup){
         loginActivityController.initializeFacebookSDK();
         rootView = LayoutInflater.from(loginActivity).inflate(R.layout.activity_login, viewGroup);
@@ -67,6 +69,7 @@ public class LoginActivityView implements LoginActivityViewInterface {
         loginLayout = rootView.findViewById(R.id.loginLayout);
     }
 
+    @Override
     public void removeCover(){
         mainCover.animate().alpha(0).setDuration(1000).setStartDelay(2000);
         loginLayout.setVisibility(View.VISIBLE);

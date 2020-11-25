@@ -7,5 +7,5 @@ public interface UserProfileActivityViewInterface extends MVCView {
     public void attachListenersToButtonGroups();
     public void adaptViewsVisibility(int type);
     public void navigateToNewActivity(boolean isUserProfileCreated);
-
+    public void generateAlertDialog(double bmi, int weightAdjust);
 }

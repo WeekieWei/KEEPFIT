@@ -12,12 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputLayout;
-import com.hoongyan.keepfit.JavaClass.UserProfile;
 import com.hoongyan.keepfit.MainActivity.MainActivity;
 import com.hoongyan.keepfit.R;
 import com.hoongyan.keepfit.UserProfileActivity.Controller.UserProfileActivityController;
@@ -237,6 +235,7 @@ public class UserProfileActivityView implements UserProfileActivityViewInterface
         userProfileActivity.finish();
     }
 
+    @Override
     public void generateAlertDialog(double bmi, int weightAdjust) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(rootView.getContext()).create();

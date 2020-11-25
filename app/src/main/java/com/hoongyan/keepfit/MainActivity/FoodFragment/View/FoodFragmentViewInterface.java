@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hoongyan.keepfit.JavaClass.CalorieSlotDataObject;
 import com.hoongyan.keepfit.MVCView;
 import com.hoongyan.keepfit.MainActivity.FoodFragment.Controller.FoodFragmentController;
 import org.json.JSONException;
@@ -28,4 +29,6 @@ public interface FoodFragmentViewInterface extends MVCView {
     public void onActivityResult(Intent data);
 
     public void notifyFirebaseUpdate(boolean status);
+
+    public void updateCalSlotsData(CalorieSlotDataObject object, int selectedSlotIndex);
 }

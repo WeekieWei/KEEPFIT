@@ -1,17 +1,7 @@
 package com.hoongyan.keepfit.MainActivity.HomeFragment.Controller;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -29,13 +19,9 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.hoongyan.keepfit.JavaClass.UserHomePageData;
 import com.hoongyan.keepfit.MVCModel;
 import com.hoongyan.keepfit.MainActivity.HomeFragment.View.HomeFragmentView;
-import com.hoongyan.keepfit.MainActivity.MainActivityView;
-import com.hoongyan.keepfit.R;
 import com.hoongyan.keepfit.Workers.DailyRefreshWorker;
 import com.hoongyan.keepfit.Workers.StepTrackingWorker;
 import com.hoongyan.keepfit.Workers.UpdateFireBaseWorker;
@@ -75,6 +61,7 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
 
     }
 
+    @Override
     public void getUpdatedHomePageData(){
         if(mvcModel.isUserProfileExistInLocalStorage()){
             homeFragmentView.bindDataToViews(mvcModel.getUserHomePageData());
@@ -126,6 +113,7 @@ public class HomeFragmentController implements HomeFragmentControllerInterface {
         });
     }
 
+    @Override
     public boolean updateWeight(double newWeight){
         if(isOnline()){
             mvcModel.updateUserWeight(new MVCModel.TaskResultStatus() {

@@ -70,10 +70,12 @@ public class MainActivityController implements MainActivityControllerInterface {
         }
     }
 
+    @Override
     public void openNavigationDrawer(DrawerLayout drawerLayout){
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    @Override
     public NavController getNavController(){
         return navController;
     }

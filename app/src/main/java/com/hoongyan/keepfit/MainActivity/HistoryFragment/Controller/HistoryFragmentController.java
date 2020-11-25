@@ -3,8 +3,6 @@ package com.hoongyan.keepfit.MainActivity.HistoryFragment.Controller;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -47,6 +45,7 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
         });
     }
 
+    @Override
     public void removeItemAtPosition(int position, String documentID, Date itemDate, int foodSlotID, double totalCal, int type){
 
         Instant itemInstant = itemDate.toInstant().truncatedTo(ChronoUnit.DAYS);
@@ -71,6 +70,7 @@ public class HistoryFragmentController implements HistoryFragmentControllerInter
         }, documentID, slotIndex, totalCal, type, itemInstant);
     }
 
+    @Override
     public void editItemAtPosition(int position, String documentID){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Edit Meal Name");

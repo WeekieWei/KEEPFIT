@@ -134,6 +134,7 @@ public class ExerciseFragmentController implements ExerciseFragmentFragmentContr
         }
     }
 
+    @Override
     public RecyclerView.Adapter getRecycleViewAdapter(){
 
         exerciseList = new ArrayList<>();
@@ -150,6 +151,7 @@ public class ExerciseFragmentController implements ExerciseFragmentFragmentContr
         return new ExerciseRecycleViewAdapter(exerciseList, mvcModel.getUserWeightFloat());
     }
 
+    @Override
     public double getCalVal(double met){
         return met * 3.5 * mvcModel.getUserWeightFloat() / 200;
     }

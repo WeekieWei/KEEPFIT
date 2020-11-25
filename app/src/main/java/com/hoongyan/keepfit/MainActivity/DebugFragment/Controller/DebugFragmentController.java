@@ -28,18 +28,22 @@ public class DebugFragmentController implements DebugFragmentControllerInterface
         this.context = context;
     }
 
+    @Override
     public String getUserID(){
         return mvcModel.getUserID();
     }
 
+    @Override
     public String getSensorType(){
         return mvcModel.getSensorType();
     }
 
+    @Override
     public String getCurrentSteps(){
         return "" + (int) mvcModel.getCurrentSteps() + "";
     }
 
+    @Override
     public String getWorkerState(String workUniqueName) {
         WorkManager instance = WorkManager.getInstance(context);
         ListenableFuture<List<WorkInfo>> statuses = instance.getWorkInfosForUniqueWork(workUniqueName);
@@ -66,34 +70,42 @@ public class DebugFragmentController implements DebugFragmentControllerInterface
         return null;
     }
 
+    @Override
     public String getLocalDatabaseContent(){
         return mvcModel.getLocalDatabaseContent();
     }
 
+    @Override
     public String getLocalDatabaseLastUpdate(){
         return mvcModel.getLocalDatabaseLastUpdate();
     }
 
+    @Override
     public String getLastDailyResetTrigger(){
         return mvcModel.getLastDailyResetTrigger();
     }
 
+    @Override
     public String getLastFirebaseTrigger(){
         return mvcModel.getLastFirebaseTrigger();
     }
 
+    @Override
     public String getLastFirebaseUpdate(){
         return mvcModel.getLastFirebaseUpdate();
     }
 
+    @Override
     public String getLastFirebaseUpdateValue(){
         return mvcModel.getLastFirebaseUpdateValue();
     }
 
+    @Override
     public void updateLocalDatabase(){
         mvcModel.updateLocalDatabase(Integer.MIN_VALUE, null);
     }
 
+    @Override
     public void updateFirebase(){
 
         updateLocalDatabase();

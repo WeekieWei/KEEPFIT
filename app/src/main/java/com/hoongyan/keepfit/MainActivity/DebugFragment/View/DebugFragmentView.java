@@ -1,7 +1,6 @@
 package com.hoongyan.keepfit.MainActivity.DebugFragment.View;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,16 +87,19 @@ public class DebugFragmentView implements DebugFragmentViewInterface {
         return rootView;
     }
 
+    @Override
     public View inflateFragmentLayout(LayoutInflater inflater, ViewGroup container){
         rootView = inflater.inflate(R.layout.fragment_debug, container, false);
         initializeViews();
         return rootView;
     }
 
+    @Override
     public void startDebugging(){
         handler.postDelayed(runnable, 0);
     }
 
+    @Override
     public void stopDebugging(){
         handler.removeCallbacks(runnable);
     }
@@ -117,50 +119,62 @@ public class DebugFragmentView implements DebugFragmentViewInterface {
         refreshLastFirebaseValue();
     }
 
+    @Override
     public void refreshUserID(){
         userId.setText(": " + debugFragmentController.getUserID());
     }
 
+    @Override
     public void refreshSensorType(){
         sensorType.setText(": " + debugFragmentController.getSensorType());
     }
 
+    @Override
     public void refreshCurrentSteps(){
         currentSteps.setText(": " + debugFragmentController.getCurrentSteps());
     }
 
+    @Override
     public void refreshPedometerState(){
         pedometerState.setText(": " + debugFragmentController.getWorkerState("StepTrackingWorker"));
     }
 
+    @Override
     public void refreshDailyRefreshState(){
         dailyRefreshState.setText(": " + debugFragmentController.getWorkerState("DailyRefreshWorker"));
     }
 
+    @Override
     public void refreshFirebaseSyncState(){
         firebaseSyncState.setText(": " + debugFragmentController.getWorkerState("UpdateFirebaseWorker"));
     }
 
+    @Override
     public void refreshLocalDatabaseContent(){
         localDatabaseContent.setText(debugFragmentController.getLocalDatabaseContent());
     }
 
+    @Override
     public void refreshDatabaseLastUpdate(){
         localDatabaseLastUpdate.setText(": " + debugFragmentController.getLocalDatabaseLastUpdate());
     }
 
+    @Override
     public void refreshLastDailyReset(){
         lastDailyResetTrigger.setText(": " + debugFragmentController.getLastDailyResetTrigger());
     }
 
+    @Override
     public void refreshLastFirebaseTrigger(){
         lastFirebaseTrigger.setText(": " + debugFragmentController.getLastFirebaseTrigger());
     }
 
+    @Override
     public void refreshLastFirebaseUpdate(){
         lastFirebaseUpdate.setText(": " + debugFragmentController.getLastFirebaseUpdate());
     }
 
+    @Override
     public void refreshLastFirebaseValue(){
         lastFirebaseValue.setText(": " + debugFragmentController.getLastFirebaseUpdateValue());
     }

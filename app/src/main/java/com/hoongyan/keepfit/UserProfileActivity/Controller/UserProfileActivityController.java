@@ -15,10 +15,6 @@ import com.hoongyan.keepfit.UserProfileActivity.View.UserProfileActivityView;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class UserProfileActivityController implements UserProfileActivityControllerInterface {
 
@@ -198,6 +194,7 @@ public class UserProfileActivityController implements UserProfileActivityControl
 
     }
 
+    @Override
     public boolean validateWH(TextInputLayout weightContainer, TextInputLayout heightContainer){
         String weight = weightContainer.getEditText().getText().toString();
         String height = heightContainer.getEditText().getText().toString();
@@ -217,6 +214,7 @@ public class UserProfileActivityController implements UserProfileActivityControl
         return true;
     }
 
+    @Override
     public void registerUserProfile(int gender, String firstName, String lastName, String dob, double weight,
                                     double height, int activityLevel){
         double calRequired;
